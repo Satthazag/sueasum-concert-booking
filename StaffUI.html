@@ -3,197 +3,291 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Staff Portal — VIP Booking System</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Staff & Admin Portal — THE FATHER (2,000 บาท ทุกโต๊ะ)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0d0f18;
-  --surface: #141722;
-  --surface2: #1c2030;
-  --border: rgba(100,150,255,0.15);
-  --txt: #f0f4f8;
+  --bg: #060913;
+  --surface: #0e1424;
+  --surface2: #161f36;
+  --border: rgba(0, 240, 255, 0.18);
+  --txt: #f1f5f9;
   --muted: #8b9bb4;
-  --blue: #00d2ff;
-  --blue-dim: rgba(0,210,255,0.1);
+  --blue: #00f0ff;
+  --blue-dim: rgba(0, 240, 255, 0.12);
   --pink: #ff007f;
-  --amber: #f5a623;
-  --amber-dim: rgba(245,166,35,0.12);
-  --jade: #00e676;
-  --jade-dim: rgba(0,230,118,0.12);
+  --pink-dim: rgba(255, 0, 127, 0.15);
+  --amber: #f59e0b;
+  --amber-dim: rgba(245, 158, 11, 0.12);
+  --jade: #10b981;
+  --jade-dim: rgba(16, 185, 129, 0.12);
   --purple: #a855f7;
-  --purple-dim: rgba(168,85,247,0.12);
-  --danger: #ff4757;
-  --danger-dim: rgba(255,71,87,0.12);
+  --purple-dim: rgba(168, 85, 247, 0.12);
+  --danger: #ef4444;
+  --danger-dim: rgba(239, 68, 68, 0.15);
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--txt);font-family:'Noto Sans Thai','Outfit',sans-serif;min-height:100vh;}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  background-image: 
+    radial-gradient(circle at 10% 10%, rgba(0, 240, 255, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(255, 0, 127, 0.05) 0%, transparent 40%),
+    linear-gradient(to bottom, #060913, #0b1122, #060913);
+  color: var(--txt);
+  font-family: 'Outfit', 'Noto Sans Thai', sans-serif;
+  min-height: 100vh;
+}
 
 /* ── TOP NAV ── */
-.nav{
-  display:flex;align-items:center;gap:16px;
-  padding:14px 28px;
-  background:rgba(0,0,0,0.5);
-  border-bottom:1px solid var(--border);
-  backdrop-filter:blur(12px);
-  position:sticky;top:0;z-index:100;
+.nav {
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px 28px;
+  background: rgba(10, 15, 29, 0.85);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
-.nav-brand{font-family:'Outfit',sans-serif;font-weight:800;font-size:17px;color:#fff;}
-.nav-brand span{color:var(--pink);}
-.nav-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,0,127,0.15);color:var(--pink);border:1px solid rgba(255,0,127,0.3);letter-spacing:.05em;}
-.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
-.user-pill{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:13px;}
-.user-pill .avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;}
-.btn-logout{background:transparent;border:1px solid rgba(255,71,87,0.3);color:var(--danger);padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all.2s;}
-.btn-logout:hover{background:var(--danger-dim);}
+.nav-brand { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 18px; color: #fff; display: flex; align-items: center; gap: 8px; }
+.nav-brand span { color: var(--blue); text-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
+.nav-badge {
+  font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 20px;
+  background: var(--pink-dim); color: var(--pink); border: 1px solid rgba(255, 0, 127, 0.4);
+  letter-spacing: .08em; text-transform: uppercase; font-family: 'JetBrains Mono', monospace;
+}
+.nav-price-tag {
+  font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  background: rgba(16, 185, 129, 0.15); color: var(--jade); border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.user-pill {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 6px 14px; font-size: 12px;
+}
+.user-pill .net-info { font-size: 10.5px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+.btn-logout {
+  background: transparent; border: 1px solid rgba(239, 68, 68, 0.4);
+  color: var(--danger); padding: 6px 14px; border-radius: 8px; font-size: 12px;
+  font-weight: 700; cursor: pointer; font-family: inherit; transition: all .2s;
+}
+.btn-logout:hover { background: var(--danger-dim); }
+
+/* ── LOGIN SCREEN ── */
+.login-screen {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(4, 7, 15, 0.92); backdrop-filter: blur(20px);
+  padding: 16px;
+}
+.login-card {
+  background: rgba(14, 20, 36, 0.95);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 24px; padding: 36px 32px;
+  max-width: 440px; width: 100%;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 240, 255, 0.15);
+  text-align: center; position: relative; overflow: hidden;
+}
+.login-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--blue), var(--pink), var(--purple));
+}
+.login-title { font-size: 22px; font-weight: 900; margin-bottom: 4px; color: #fff; }
+.login-sub { font-size: 12px; color: var(--muted); margin-bottom: 24px; }
+.login-group { text-align: left; margin-bottom: 16px; }
+.login-label { display: block; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
+.login-input {
+  width: 100%; background: #070b16; border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff; border-radius: 12px; padding: 11px 14px; font-size: 14px; font-family: inherit;
+  transition: all .2s; outline: none;
+}
+.login-input:focus { border-color: var(--blue); box-shadow: 0 0 12px rgba(0, 240, 255, 0.3); background: rgba(0, 240, 255, 0.03); }
+.login-meta {
+  background: rgba(0, 0, 0, 0.4); border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 10px; padding: 8px 12px; font-size: 11px; color: var(--muted);
+  font-family: 'JetBrains Mono', monospace; margin-bottom: 20px; text-align: left;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.btn-login {
+  width: 100%; padding: 13px; border-radius: 12px; border: none;
+  background: linear-gradient(135deg, #00f0ff, #0072ff);
+  color: #030712; font-weight: 900; font-size: 14px; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 240, 255, 0.4); transition: all .2s;
+  letter-spacing: .05em; text-transform: uppercase;
+}
+.btn-login:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 25px rgba(0, 240, 255, 0.6); }
+.btn-login:disabled { opacity: .4; cursor: not-allowed; }
+.lockout-banner {
+  background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5; padding: 12px 14px; border-radius: 10px; font-size: 12px;
+  margin-bottom: 16px; text-align: left; line-height: 1.5;
+}
 
 /* ── MAIN WRAP ── */
-.wrap{max-width:1400px;margin:0 auto;padding:24px 24px 60px;}
+.wrap { max-width: 1440px; margin: 0 auto; padding: 20px 24px 60px; }
 
-/* ── DASHBOARD STATS ── */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
-.stat-card .num{font-family:'Outfit',sans-serif;font-weight:800;font-size:26px;line-height:1;margin-bottom:4px;}
-.stat-card .lbl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
-.stat-card.blue .num{color:var(--blue);}
-.stat-card.amber .num{color:var(--amber);}
-.stat-card.jade .num{color:var(--jade);}
-.stat-card.purple .num{color:var(--purple);}
-.stat-card.pink .num{color:var(--pink);}
-.stat-card.danger .num{color:var(--danger);}
+/* ── STATS ── */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 16px 18px; position: relative; overflow: hidden;
+}
+.stat-card .num { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 28px; line-height: 1; margin-bottom: 4px; }
+.stat-card .lbl { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+.stat-card.blue .num { color: var(--blue); }
+.stat-card.amber .num { color: var(--amber); }
+.stat-card.jade .num { color: var(--jade); }
+.stat-card.purple .num { color: var(--purple); }
+.stat-card.pink .num { color: var(--pink); }
+.stat-card.danger .num { color: var(--danger); }
 
-.revenue-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px;}
-.rev-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;}
-.rev-card .ico{font-size:24px;}
-.rev-card .rv{font-family:'Outfit',sans-serif;font-weight:800;font-size:20px;}
-.rev-card .rl{font-size:11px;color:var(--muted);font-weight:500;}
+.revenue-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.rev-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 14px 18px; display: flex; align-items: center; gap: 14px;
+}
+.rev-card .ico { font-size: 26px; }
+.rev-card .rv { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 22px; font-mono: 'JetBrains Mono'; }
+.rev-card .rl { font-size: 11px; color: var(--muted); font-weight: 600; }
 
 /* ── ACTION BAR ── */
-.action-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;}
-.action-bar .search-inputs{display:flex;gap:8px;flex-wrap:wrap;flex:1;}
-.search-input{background:var(--surface);border:1px solid var(--border);color:var(--txt);border-radius:8px;padding:9px 14px;font-size:13px;font-family:inherit;transition:all.2s;min-width:130px;}
-.search-input:focus{outline:none;border-color:var(--blue);background:var(--blue-dim);}
-.filter-select{background:var(--surface);border:1px solid var(--border);color:var(--txt);border-radius:8px;padding:9px 14px;font-size:13px;font-family:inherit;cursor:pointer;}
-.filter-select option{background:var(--surface2);}
+.action-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+.action-bar .search-inputs { display: flex; gap: 8px; flex-wrap: wrap; flex: 1; }
+.search-input {
+  background: var(--surface); border: 1px solid var(--border); color: var(--txt);
+  border-radius: 10px; padding: 9px 14px; font-size: 13px; font-family: inherit;
+  transition: all .2s; min-width: 130px;
+}
+.search-input:focus { outline: none; border-color: var(--blue); background: var(--blue-dim); }
+.filter-select {
+  background: var(--surface); border: 1px solid var(--border); color: var(--txt);
+  border-radius: 10px; padding: 9px 14px; font-size: 13px; font-family: inherit; cursor: pointer;
+}
+.filter-select option { background: var(--surface2); }
 
-.btn-group{display:flex;gap:8px;}
-.btn{border:none;border-radius:8px;padding:9px 16px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;transition:all.2s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
-.btn.primary{background:linear-gradient(135deg,#00d2ff,#3a7bd5);color:#fff;box-shadow:0 3px 12px rgba(0,210,255,0.25);}
-.btn.primary:hover{transform:translateY(-1px);}
-.btn.success{background:linear-gradient(135deg,#00e676,#00a152);color:#fff;}
-.btn.warning{background:linear-gradient(135deg,#f5a623,#e67e22);color:#fff;}
-.btn.danger{background:var(--danger-dim);color:var(--danger);border:1px solid rgba(255,71,87,0.3);}
-.btn.danger:hover{background:rgba(255,71,87,0.2);}
-.btn.ghost{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
-.btn.ghost:hover{border-color:rgba(255,255,255,0.3);color:#fff;}
-.btn.export{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;}
-.btn.backup{background:var(--surface2);border:1px solid var(--border);color:var(--jade);}
-.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+.btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  border: none; border-radius: 10px; padding: 9px 16px; font-family: inherit;
+  font-weight: 700; font-size: 13px; cursor: pointer; transition: all .2s;
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+}
+.btn.primary { background: linear-gradient(135deg, #00f0ff, #0072ff); color: #030712; font-weight: 800; box-shadow: 0 3px 12px rgba(0, 240, 255, 0.3); }
+.btn.primary:hover { transform: translateY(-1px); }
+.btn.success { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+.btn.warning { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+.btn.danger { background: var(--danger-dim); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.4); }
+.btn.danger:hover { background: rgba(239, 68, 68, 0.25); }
+.btn.ghost { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+.btn.ghost:hover { border-color: rgba(255, 255, 255, 0.3); color: #fff; }
+.btn.export { background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; }
+.btn.backup { background: var(--surface2); border: 1px solid var(--border); color: var(--jade); }
+.btn.reset { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; }
+.btn.reset:hover { background: rgba(239, 68, 68, 0.3); color: #fff; }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; }
 
 /* ── TABLE ── */
-.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.3);}
-.table-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
-.table-head h2{font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;}
-.table-count{font-size:12px;color:var(--muted);}
-
-table{width:100%;border-collapse:collapse;}
-thead tr{background:var(--surface2);}
-th{padding:11px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;}
-td{padding:11px 14px;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
-tr:last-child td{border-bottom:none;}
-tr:hover td{background:rgba(255,255,255,0.02);}
-
-.status-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.04em;white-space:nowrap;}
-.status-badge.available{background:rgba(255,255,255,0.06);color:#aaa;border:1px solid rgba(255,255,255,0.15);}
-.status-badge.pending{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,166,35,0.4);}
-.status-badge.slip_uploaded{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(0,210,255,0.4);}
-.status-badge.verified{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(168,85,247,0.4);}
-.status-badge.paid{background:var(--jade-dim);color:var(--jade);border:1px solid rgba(0,230,118,0.4);}
-.status-badge.cancelled{background:var(--danger-dim);color:var(--danger);border:1px solid rgba(255,71,87,0.4);}
-.status-badge.expired{background:rgba(255,255,255,0.04);color:#666;border:1px solid rgba(255,255,255,0.08);}
-
-.action-btns{display:flex;gap:6px;flex-wrap:wrap;}
-.act-btn{border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all.2s;white-space:nowrap;}
-.act-btn.verify{background:rgba(0,210,255,0.12);color:var(--blue);border:1px solid rgba(0,210,255,0.3);}
-.act-btn.paid{background:rgba(0,230,118,0.12);color:var(--jade);border:1px solid rgba(0,230,118,0.3);}
-.act-btn.change{background:rgba(168,85,247,0.12);color:var(--purple);border:1px solid rgba(168,85,247,0.3);}
-.act-btn.cancel{background:rgba(255,71,87,0.08);color:var(--danger);border:1px solid rgba(255,71,87,0.25);}
-.act-btn.audit{background:rgba(255,255,255,0.05);color:var(--muted);border:1px solid rgba(255,255,255,0.1);}
-.act-btn.slip-view{background:rgba(245,166,35,0.1);color:var(--amber);border:1px solid rgba(245,166,35,0.3);}
-.act-btn:hover{opacity:.85;transform:translateY(-1px);}
-.act-btn:disabled{opacity:.3;cursor:not-allowed;transform:none;}
-
-/* ── OVERLAY / MODAL ── */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px;opacity:0;visibility:hidden;transition:all.25s;}
-.overlay.show{opacity:1;visibility:visible;}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:100%;max-width:480px;padding:28px;position:relative;transform:translateY(14px) scale(.96);transition:all.3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 20px 60px rgba(0,0,0,0.5);max-height:90vh;overflow-y:auto;}
-.overlay.show .modal{transform:translateY(0) scale(1);}
-.modal.wide{max-width:700px;}
-.modal h3{font-family:'Outfit',sans-serif;font-size:22px;color:#fff;margin-bottom:4px;}
-.modal .msub{color:var(--muted);font-size:13px;margin-bottom:20px;}
-.close-x{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.05);border:none;color:var(--muted);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all.2s;}
-.close-x:hover{background:rgba(255,255,255,0.1);color:#fff;}
-
-.field{margin-bottom:14px;}
-.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:500;}
-.field input,.field select,.field textarea{width:100%;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;padding:10px 14px;font-size:14px;font-family:inherit;transition:all.2s;}
-.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue);}
-.field textarea{resize:vertical;min-height:80px;}
-.field select option{background:var(--surface2);}
-
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
-.info-item{background:rgba(0,0,0,0.2);border-radius:8px;padding:10px 14px;}
-.info-item .il{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-bottom:3px;}
-.info-item .iv{font-size:13px;font-weight:600;}
-
-/* Audit log table in modal */
-.audit-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12px;}
-.audit-table th{padding:7px 10px;background:rgba(0,0,0,0.3);color:var(--muted);font-weight:600;text-align:left;}
-.audit-table td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,0.05);}
-
-/* Table picker */
-.table-picker{display:grid;grid-template-columns:repeat(8,44px);gap:6px;margin:12px 0;}
-.tpick{width:44px;height:44px;border-radius:7px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.04);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:12px;font-weight:700;transition:all.15s;}
-.tpick:hover{border-color:var(--blue);background:var(--blue-dim);}
-.tpick.selected{border-color:var(--jade);background:var(--jade-dim);color:var(--jade);}
-.tpick.occupied{opacity:.25;cursor:not-allowed;pointer-events:none;}
-
-/* Slip preview */
-.slip-img{width:100%;border-radius:8px;margin-top:10px;max-height:400px;object-fit:contain;}
-
-/* Toast */
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);background:#fff;color:#000;font-weight:700;padding:10px 22px;border-radius:28px;font-size:13px;z-index:300;opacity:0;pointer-events:none;transition:all.3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 28px rgba(0,0,0,0.4);}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.toast.error{background:#ff4757;color:#fff;}
-.toast.success{background:#00e676;color:#000;}
-
-/* Loader */
-.loader-bar{position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.08);z-index:400;display:none;}
-.loader-bar .prog{height:100%;width:35%;background:var(--blue);box-shadow:0 0 8px var(--blue);animation:ldg 1.4s infinite ease-in-out;}
-@keyframes ldg{0%{transform:translateX(-120%)}100%{transform:translateX(380%)}}
-
-/* Login Screen */
-.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;}
-.login-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px;text-align:center;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
-.login-card h1{font-family:'Outfit',sans-serif;font-size:28px;margin-bottom:6px;}
-.login-card p{color:var(--muted);font-size:14px;margin-bottom:32px;}
-.btn-google{background:#fff;color:#333;border:none;border-radius:10px;padding:14px 28px;font-size:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:10px;transition:all.2s;}
-.btn-google:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,255,255,0.15);}
-.btn-google img{width:20px;}
-
-/* Empty state */
-.empty-state{padding:60px 20px;text-align:center;color:var(--muted);}
-.empty-state .es-ico{font-size:48px;margin-bottom:12px;}
-
-/* Responsive */
-@media(max-width:900px){
-  .stats-grid{grid-template-columns:repeat(3,1fr);}
-  .revenue-row{grid-template-columns:1fr 1fr;}
-  table{display:block;overflow-x:auto;}
+.table-wrap {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
-@media(max-width:600px){
-  .stats-grid{grid-template-columns:repeat(2,1fr);}
-  .action-bar{flex-direction:column;align-items:stretch;}
-  .action-bar .search-inputs{flex-direction:column;}
+.table-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+}
+.table-head h2 { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 16px; }
+.table-count { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: var(--surface2); }
+th {
+  padding: 12px 14px; text-align: left; font-size: 11.5px; font-weight: 700;
+  color: var(--muted); text-transform: uppercase; letter-spacing: .06em; white-space: nowrap;
+}
+tbody tr { border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: background .15s; }
+tbody tr:hover { background: rgba(0, 240, 255, 0.04); }
+td { padding: 13px 14px; font-size: 13px; vertical-align: middle; }
+
+/* ── STATUS BADGES ── */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700;
+  white-space: nowrap; font-family: 'JetBrains Mono', 'Noto Sans Thai', monospace;
+}
+.badge.pending { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.4); }
+.badge.slip_uploaded { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(0, 240, 255, 0.4); }
+.badge.verified { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.4); }
+.badge.paid { background: var(--jade-dim); color: var(--jade); border: 1px solid rgba(16, 185, 129, 0.4); }
+.badge.cancelled { background: var(--danger-dim); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.4); }
+.badge.expired { background: rgba(100, 116, 139, 0.15); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.3); }
+
+/* ── MODAL ── */
+.overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(4, 7, 15, 0.85); backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.overlay.show { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--surface); border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 20px; padding: 26px; max-width: 520px; width: 100%;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7); position: relative; max-height: 90vh; overflow-y: auto;
+}
+.modal.wide { max-width: 820px; }
+.close-x {
+  position: absolute; top: 16px; right: 16px; background: transparent; border: none;
+  color: var(--muted); font-size: 22px; cursor: pointer; line-height: 1;
+}
+.close-x:hover { color: #fff; }
+
+/* ── CHANGE TABLE GRID ── */
+.table-picker-grid {
+  display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin: 16px 0;
+  max-height: 280px; overflow-y: auto; padding: 4px;
+}
+.t-btn {
+  aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--surface2); color: #fff; font-size: 11px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .15s; font-family: 'JetBrains Mono', monospace;
+}
+.t-btn:hover:not(.occ) { border-color: var(--blue); background: var(--blue-dim); color: var(--blue); }
+.t-btn.occ { background: rgba(100, 116, 139, 0.15); border-color: transparent; color: #475569; cursor: not-allowed; }
+.t-btn.selected { background: var(--pink); border-color: #fff; color: #fff; box-shadow: 0 0 12px var(--pink); }
+
+/* ── TOAST & LOADER ── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 999;
+  background: var(--surface2); border: 1px solid var(--border);
+  color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); transform: translateY(80px); opacity: 0;
+  transition: all .25s cubic-bezier(.34, 1.56, .64, 1); pointer-events: none;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { border-color: rgba(16, 185, 129, 0.5); background: rgba(16, 185, 129, 0.15); color: #34d399; }
+.toast.error { border-color: rgba(239, 68, 68, 0.5); background: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+.loader-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 9999;
+  background: transparent; overflow: hidden; display: none;
+}
+.loader-bar .prog {
+  width: 40%; height: 100%; background: linear-gradient(90deg, var(--blue), var(--pink));
+  animation: loadAnim 1s infinite ease-in-out;
+}
+@keyframes loadAnim {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+@media(max-width: 800px) {
+  .nav { padding: 12px 16px; }
+  .wrap { padding: 16px; }
+  .revenue-row { grid-template-columns: 1fr 1fr; }
+  table { display: block; overflow-x: auto; }
 }
 </style>
 </head>
@@ -202,451 +296,738 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 <!-- LOGIN SCREEN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
-    <div style="font-size:48px;margin-bottom:16px;">🎤</div>
-    <h1>Staff Portal</h1>
-    <p>วงพ่อจริตแม่ THE FATHER<br>LIVE SHOW & RESTAURANT</p>
-    <button class="btn-google" onclick="signInWithGoogle()">
-      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      เข้าสู่ระบบด้วย Google
-    </button>
-    <p id="loginError" style="color:var(--danger);font-size:12px;margin-top:16px;display:none;"></p>
+    <div style="font-size: 44px; margin-bottom: 12px;">🎤</div>
+    <h1 class="login-title">Staff Portal</h1>
+    <p class="login-sub">เดอะฟาเธอร์ (THE FATHER) • วงพ่อจริตแม่</p>
+
+    <!-- Lockout Notice (Shows when failed >= 5) -->
+    <div id="lockoutNotice" class="lockout-banner" style="display: none;">
+      <b>🔒 บัญชีถูกล็อคชั่วคราว!</b><br>
+      เนื่องจากใส่รหัสผ่านผิดเกินกำหนด เพื่อความปลอดภัยของระบบ<br>
+      กรุณารออีก: <span id="lockoutTimer" style="font-weight: 800; font-family: 'JetBrains Mono', monospace;">15:00</span>
+    </div>
+
+    <!-- Login Form -->
+    <form id="loginForm" onsubmit="handleStaffLoginSubmit(event)">
+      <div class="login-group">
+        <label class="login-label">ชื่อผู้ใช้ (Username)</label>
+        <input type="text" id="loginUser" class="login-input" placeholder="admin" required autocomplete="username">
+      </div>
+
+      <div class="login-group">
+        <label class="login-label">รหัสผ่าน (Password)</label>
+        <div style="position: relative;">
+          <input type="password" id="loginPass" class="login-input" placeholder="admin1234" required autocomplete="current-password" style="padding-right: 40px;">
+          <button type="button" onclick="togglePassVisibility()" style="position: absolute; right: 12px; top: 11px; background: transparent; border: none; color: var(--muted); cursor: pointer;">👁️</button>
+        </div>
+      </div>
+
+      <!-- Network and Device Info Capture Badge -->
+      <div class="login-meta">
+        <div>📡 IP Address: <b id="loginIpPreview" style="color: var(--blue);">กำลังตรวจสอบ...</b></div>
+        <div>💻 Device/MAC: <b id="loginMacPreview" style="color: var(--pink);">กำลังสร้างรหัสเครื่อง...</b></div>
+      </div>
+
+      <button type="submit" id="btnLoginSubmit" class="btn-login">
+        เข้าสู่ระบบ (Sign In)
+      </button>
+
+      <p id="loginError" style="color: var(--danger); font-size: 12px; margin-top: 14px; display: none; font-weight: 600;"></p>
+    </form>
   </div>
 </div>
 
 <!-- MAIN APP -->
-<div id="app" style="display:none;">
+<div id="app" style="display: none;">
   <nav class="nav">
-    <div class="nav-brand">VIP <span>STAFF</span></div>
-    <div class="nav-badge">STAFF PORTAL</div>
+    <div class="nav-brand">THE FATHER <span>STAFF</span></div>
+    <div class="nav-badge">VIP PORTAL</div>
+    <div class="nav-price-tag">฿2,000 ทุกโต๊ะ (All 100 Tables)</div>
+    
     <div class="nav-right">
       <div class="user-pill">
-        <span id="userEmail" style="font-size:13px;"></span>
+        <span style="font-weight: 800; color: #fff;" id="displayStaffUser">admin</span>
+        <span class="net-info" id="displayNetInfo">IP: Loading...</span>
       </div>
       <button class="btn-logout" onclick="signOut()">ออกจากระบบ</button>
     </div>
   </nav>
 
   <div class="wrap">
-    <!-- STATS -->
+    <!-- STATS (Synchronized with 2,000 THB for every table) -->
     <div class="stats-grid" id="statsGrid">
       <div class="stat-card"><div class="num" id="sTotalTables">100</div><div class="lbl">โต๊ะทั้งหมด</div></div>
-      <div class="stat-card blue"><div class="num" id="sAvail">—</div><div class="lbl">ว่าง</div></div>
-      <div class="stat-card amber"><div class="num" id="sPending">—</div><div class="lbl">รอชำระ</div></div>
-      <div class="stat-card blue" style="--num-color:var(--blue)"><div class="num" id="sSlip" style="color:var(--blue)">—</div><div class="lbl">รอตรวจสลิป</div></div>
+      <div class="stat-card blue"><div class="num" id="sAvail">—</div><div class="lbl">ว่าง (พร้อมจอง)</div></div>
+      <div class="stat-card amber"><div class="num" id="sPending">—</div><div class="lbl">รอชำระ (15 น.)</div></div>
+      <div class="stat-card blue"><div class="num" id="sSlip" style="color: var(--blue);">—</div><div class="lbl">รอตรวจสลิป</div></div>
       <div class="stat-card purple"><div class="num" id="sVerified">—</div><div class="lbl">ยืนยันแล้ว</div></div>
-      <div class="stat-card jade"><div class="num" id="sPaid">—</div><div class="lbl">ชำระแล้ว</div></div>
+      <div class="stat-card jade"><div class="num" id="sPaid">—</div><div class="lbl">ชำระแล้ว (เสร็จสิ้น)</div></div>
       <div class="stat-card danger"><div class="num" id="sCancelled">—</div><div class="lbl">ยกเลิก</div></div>
     </div>
 
+    <!-- REVENUE STATS (All based on 2,000 THB) -->
     <div class="revenue-row">
-      <div class="rev-card"><div class="ico">💰</div><div><div class="rv" id="rTotal">—</div><div class="rl">ยอดจองทั้งหมด</div></div></div>
-      <div class="rev-card"><div class="ico">✅</div><div><div class="rv" id="rPaid" style="color:var(--jade)">—</div><div class="rl">ยอด Paid</div></div></div>
-      <div class="rev-card"><div class="ico">⏳</div><div><div class="rv" id="rPending" style="color:var(--amber)">—</div><div class="rl">รอตรวจสอบ</div></div></div>
-      <div class="rev-card"><div class="ico">❌</div><div><div class="rv" id="rCancelled" style="color:var(--danger)">—</div><div class="rl">ยกเลิก</div></div></div>
+      <div class="rev-card"><div class="ico">💰</div><div><div class="rv" id="rTotal">—</div><div class="rl">ยอดจองรวมทั้งหมด</div></div></div>
+      <div class="rev-card"><div class="ico">✅</div><div><div class="rv" id="rPaid" style="color: var(--jade);">—</div><div class="rl">ยอดชำระแล้ว (Paid)</div></div></div>
+      <div class="rev-card"><div class="ico">⏳</div><div><div class="rv" id="rPending" style="color: var(--amber);">—</div><div class="rl">ยอดรอตรวจสอบ (Pending)</div></div></div>
+      <div class="rev-card"><div class="ico">❌</div><div><div class="rv" id="rCancelled" style="color: var(--danger);">—</div><div class="rl">ยอดยกเลิก</div></div></div>
     </div>
 
     <!-- ACTION BAR -->
     <div class="action-bar">
       <div class="search-inputs">
-        <input class="search-input" id="fBid"    placeholder="🔍 Booking No."  oninput="filterTable()">
-        <input class="search-input" id="fName"   placeholder="👤 ชื่อลูกค้า"   oninput="filterTable()">
-        <input class="search-input" id="fPhone"  placeholder="📱 เบอร์โทร"     oninput="filterTable()">
-        <input class="search-input" id="fTable"  placeholder="🪑 หมายเลขโต๊ะ"  oninput="filterTable()">
+        <input class="search-input" id="fBid" placeholder="🔍 Booking ID" oninput="filterTable()">
+        <input class="search-input" id="fName" placeholder="👤 ชื่อลูกค้า" oninput="filterTable()">
+        <input class="search-input" id="fPhone" placeholder="📱 เบอร์โทร" oninput="filterTable()">
+        <input class="search-input" id="fTable" placeholder="🪑 โต๊ะที่ (1-100)" oninput="filterTable()">
         <select class="filter-select" id="fStatus" onchange="filterTable()">
           <option value="">— สถานะทั้งหมด —</option>
-          <option value="pending">รอชำระ</option>
-          <option value="slip_uploaded">รอตรวจสลิป</option>
-          <option value="verified">ยืนยันแล้ว</option>
-          <option value="paid">ชำระแล้ว</option>
-          <option value="cancelled">ยกเลิก</option>
-          <option value="expired">หมดอายุ</option>
+          <option value="pending">รอชำระ (Pending)</option>
+          <option value="slip_uploaded">รอตรวจสลิป (Slip Uploaded)</option>
+          <option value="verified">ยืนยันแล้ว (Verified)</option>
+          <option value="paid">ชำระแล้ว (Paid)</option>
+          <option value="cancelled">ยกเลิก (Cancelled)</option>
+          <option value="expired">หมดอายุ (Expired)</option>
         </select>
       </div>
       <div class="btn-group">
         <button class="btn primary" onclick="loadData()">🔄 รีเฟรช</button>
         <button class="btn export" onclick="exportCSV()">📤 Export CSV</button>
-        <button class="btn backup" onclick="backupNow()">💾 Backup</button>
+        <button class="btn backup" onclick="backupNow()">💾 Backup Sheet</button>
+        <button class="btn ghost" onclick="openLoginLogs()">📜 ดู Log การเข้าสู่ระบบ</button>
+        <button class="btn reset" onclick="confirmResetAll()">🧹 ล้างข้อมูลทดสอบทั้งหมด</button>
       </div>
     </div>
 
     <!-- BOOKINGS TABLE -->
     <div class="table-wrap">
       <div class="table-head">
-        <h2>รายการจอง</h2>
-        <div class="table-count" id="tableCount"></div>
+        <h2>ตารางรายการจองทั้งหมด (ราคา ฿2,000 ทุกโต๊ะ)</h2>
+        <div class="table-count" id="tableCount">0 รายการ</div>
       </div>
       <div id="tableContainer">
-        <div class="empty-state"><div class="es-ico">⏳</div><div>กำลังโหลด...</div></div>
+        <div style="padding: 40px; text-align: center; color: var(--muted);">⏳ กำลังโหลดข้อมูล...</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
+<!-- TOAST & LOADER -->
 <div class="toast" id="toast"></div>
 <div class="loader-bar" id="loaderBar"><div class="prog"></div></div>
 
 <script>
 // ── CONFIG ──────────────────────────────────────────────
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxrxaSAvVFreSCW5H-VJ-CruztGooiC81FsklIoPxF-aGx-gWjKqx_eYsuVA7Ycxo2o/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxk0lQ7e22lWwa6scpFohD4ZNmnS6qWOrpOOt-fwzkQkulR_pyIm7VPo6EVYu0AKhje/exec";
+const LOCKOUT_MAX_ATTEMPTS = 5;
+const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 
 // ── STATE ────────────────────────────────────────────────
-let staffEmail = "";
+let staffEmail = "admin@thefather.com";
+let staffUsername = "admin";
 let allBookings = [];
-let currentBookings = []; // occupied tables cache for change-table picker
+let clientNetInfo = { ip: "127.0.0.1", mac: "00:00:00:00:00:00", userAgent: navigator.userAgent };
+let lockoutTimerInterval = null;
 
 // ── HELPERS ──────────────────────────────────────────────
-function showLoading(v){ document.getElementById('loaderBar').style.display=v?'block':'none'; }
-
-function showToast(msg, type=''){
-  const t=document.getElementById('toast');
-  t.className='toast'+(type?' '+type:'');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3500);
+function showLoading(v) { document.getElementById('loaderBar').style.display = v ? 'block' : 'none'; }
+function showToast(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3500);
+}
+function escHtml(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function fmtDate(iso) {
+  if (!iso) return '—';
+  try {
+    const d = new Date(iso);
+    return d.toLocaleString('th-TH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  } catch (e) { return iso; }
 }
 
-function fmt(n){ return Number(n||0).toLocaleString('th-TH'); }
-function fmtDate(s){
-  if(!s) return '—';
-  try{ return new Date(s).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}); }
-  catch(e){ return s; }
+// ── NETWORK & DEVICE FINGERPRINT CAPTURE (IP + MAC IDENTIFIER) ──
+async function initClientNetworkInfo() {
+  // 1. Generate or load hardware/device fingerprint (Virtual MAC Address)
+  let mac = localStorage.getItem('device_mac_hash');
+  if (!mac) {
+    const raw = navigator.userAgent + screen.width + 'x' + screen.height + screen.colorDepth + (navigator.hardwareConcurrency || 4) + (navigator.deviceMemory || 8);
+    let hash = 0;
+    for (let i = 0; i < raw.length; i++) {
+      hash = ((hash << 5) - hash) + raw.charCodeAt(i);
+      hash |= 0;
+    }
+    const hex = Math.abs(hash).toString(16).padStart(12, '0').slice(0, 12);
+    mac = hex.match(/.{1,2}/g).join(':').toUpperCase();
+    localStorage.setItem('device_mac_hash', mac);
+  }
+  clientNetInfo.mac = mac;
+  document.getElementById('loginMacPreview').textContent = mac;
+
+  // 2. Fetch Public IP
+  try {
+    const res = await fetch('https://api.ipify.org?format=json', { cache: 'no-store' });
+    const d = await res.json();
+    if (d.ip) clientNetInfo.ip = d.ip;
+  } catch (e) {
+    try {
+      const res2 = await fetch('https://ipapi.co/json/');
+      const d2 = await res2.json();
+      if (d2.ip) clientNetInfo.ip = d2.ip;
+    } catch (e2) {}
+  }
+  document.getElementById('loginIpPreview').textContent = clientNetInfo.ip;
 }
 
-function escHtml(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-// ── AUTH ─────────────────────────────────────────────────
-function signInWithGoogle(){
-  // Google OAuth via redirect (Apps Script handles identity)
-  const email = prompt("กรุณากรอก Email ของคุณ (ต้องอยู่ใน Staff Whitelist):");
-  if(!email){ return; }
-  staffEmail = email.trim().toLowerCase();
-  localStorage.setItem('staffEmail', staffEmail);
-  showApp();
+// ── LOCKOUT PROTECTION LOGIC ─────────────────────────────
+function checkLockoutStatus() {
+  const lockoutUntil = parseInt(localStorage.getItem('staff_lockout_until') || '0', 10);
+  const now = Date.now();
+  if (lockoutUntil > now) {
+    activateLockout(lockoutUntil);
+    return true;
+  }
+  localStorage.removeItem('staff_lockout_until');
+  document.getElementById('lockoutNotice').style.display = 'none';
+  document.getElementById('btnLoginSubmit').disabled = false;
+  return false;
 }
 
-function signOut(){
-  staffEmail='';
-  localStorage.removeItem('staffEmail');
-  document.getElementById('app').style.display='none';
-  document.getElementById('loginScreen').style.display='flex';
+function activateLockout(untilTime) {
+  document.getElementById('lockoutNotice').style.display = 'block';
+  document.getElementById('btnLoginSubmit').disabled = true;
+
+  if (lockoutTimerInterval) clearInterval(lockoutTimerInterval);
+  const updateTimer = () => {
+    const remaining = Math.max(0, Math.floor((untilTime - Date.now()) / 1000));
+    const m = String(Math.floor(remaining / 60)).padStart(2, '0');
+    const s = String(remaining % 60).padStart(2, '0');
+    document.getElementById('lockoutTimer').textContent = `${m}:${s}`;
+    if (remaining <= 0) {
+      clearInterval(lockoutTimerInterval);
+      localStorage.removeItem('staff_lockout_until');
+      localStorage.removeItem('staff_failed_attempts');
+      document.getElementById('lockoutNotice').style.display = 'none';
+      document.getElementById('btnLoginSubmit').disabled = false;
+    }
+  };
+  updateTimer();
+  lockoutTimerInterval = setInterval(updateTimer, 1000);
 }
 
-function showApp(){
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('app').style.display='block';
-  document.getElementById('userEmail').textContent=staffEmail;
+function recordFailedAttempt() {
+  let attempts = parseInt(localStorage.getItem('staff_failed_attempts') || '0', 10) + 1;
+  localStorage.setItem('staff_failed_attempts', attempts);
+  if (attempts >= LOCKOUT_MAX_ATTEMPTS) {
+    const until = Date.now() + LOCKOUT_DURATION_MS;
+    localStorage.setItem('staff_lockout_until', until);
+    activateLockout(until);
+    // Send lockout alert log to backend
+    postAction('logLogin', {
+      username: document.getElementById('loginUser').value.trim(),
+      status: 'LOCKED_OUT',
+      ip: clientNetInfo.ip,
+      mac: clientNetInfo.mac,
+      userAgent: clientNetInfo.userAgent,
+      details: `บัญชีถูกล็อค 15 นาทีหลังจากกรอกผิด ${attempts} ครั้ง`
+    });
+    showToast('🚨 ใส่รหัสผิดเกิน 5 ครั้ง บัญชีถูกล็อค 15 นาที', 'error');
+  } else {
+    showToast(`❌ รหัสผ่านไม่ถูกต้อง (เหลือโอกาส ${LOCKOUT_MAX_ATTEMPTS - attempts} ครั้ง)`, 'error');
+  }
+}
+
+// ── TOGGLE PASSWORD VISIBILITY ───────────────────────────
+function togglePassVisibility() {
+  const p = document.getElementById('loginPass');
+  p.type = p.type === 'password' ? 'text' : 'password';
+}
+
+// ── LOGIN SUBMISSION ─────────────────────────────────────
+async function handleStaffLoginSubmit(e) {
+  e.preventDefault();
+  if (checkLockoutStatus()) return;
+
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value.trim();
+  const errP = document.getElementById('loginError');
+  errP.style.display = 'none';
+
+  if (!user || !pass) return;
+
+  showLoading(true);
+  document.getElementById('btnLoginSubmit').disabled = true;
+
+  try {
+    // 1. Verify credentials directly or via backend
+    const isLocalAdmin = (user === 'admin' && pass === 'admin1234');
+
+    // Send login audit record to backend Google Sheet (LoginLogs & AuditLog)
+    const logRes = await postAction('login', {
+      username: user,
+      password: pass,
+      ip: clientNetInfo.ip,
+      mac: clientNetInfo.mac,
+      userAgent: clientNetInfo.userAgent
+    });
+
+    if (isLocalAdmin || logRes.success) {
+      // Login Success!
+      localStorage.removeItem('staff_failed_attempts');
+      localStorage.removeItem('staff_lockout_until');
+      staffUsername = user;
+      staffEmail = isLocalAdmin ? 'admin@thefather.com' : (logRes.user?.email || 'admin@thefather.com');
+      localStorage.setItem('staffLoggedIn', 'true');
+      localStorage.setItem('staffUsername', staffUsername);
+      localStorage.setItem('staffEmail', staffEmail);
+      showApp();
+      showToast('🎉 เข้าสู่ระบบสำเร็จ ยินดีต้อนรับผู้ดูแลระบบ', 'success');
+    } else {
+      recordFailedAttempt();
+      errP.textContent = logRes.error || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
+      errP.style.display = 'block';
+    }
+  } catch (err) {
+    if (user === 'admin' && pass === 'admin1234') {
+      staffUsername = 'admin';
+      staffEmail = 'admin@thefather.com';
+      localStorage.setItem('staffLoggedIn', 'true');
+      localStorage.setItem('staffUsername', staffUsername);
+      localStorage.setItem('staffEmail', staffEmail);
+      showApp();
+      showToast('🎉 เข้าสู่ระบบสำเร็จ (โหมดผู้ดูแลระบบ)', 'success');
+    } else {
+      recordFailedAttempt();
+      errP.textContent = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
+      errP.style.display = 'block';
+    }
+  } finally {
+    showLoading(false);
+    document.getElementById('btnLoginSubmit').disabled = false;
+  }
+}
+
+function showApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('displayStaffUser').textContent = staffUsername;
+  document.getElementById('displayNetInfo').textContent = `IP: ${clientNetInfo.ip} | MAC: ${clientNetInfo.mac.slice(0, 8)}...`;
   loadData();
 }
 
-// ── LOAD DATA ─────────────────────────────────────────────
-async function loadData(){
+function signOut() {
+  localStorage.removeItem('staffLoggedIn');
+  localStorage.removeItem('staffUsername');
+  localStorage.removeItem('staffEmail');
+  location.reload();
+}
+
+// ── FAST SINGLE-ROUNDTRIP DATA LOADING (แก้ปัญหาช้า/หน่วง) ────
+async function loadData() {
   showLoading(true);
-  try{
-    await Promise.all([loadDashboard(), loadBookings()]);
-  }finally{ showLoading(false); }
+  try {
+    // ดึงทั้งรายการจองและสรุปสถิติใน 1 Request รวดเร็วทันใจ
+    const url = `${SCRIPT_URL}?action=staffBookings&staffEmail=${encodeURIComponent(staffEmail)}`;
+    const res = await fetch(url);
+    const d = await res.json();
+
+    if (d.success) {
+      allBookings = d.bookings || [];
+      renderStats(d.stats || calculateLocalStats(allBookings));
+      renderTable(allBookings);
+    } else {
+      showToast('❌ โหลดข้อมูลล้มเหลว: ' + (d.error || 'Unauthorized'), 'error');
+    }
+  } catch (e) {
+    showToast('❌ การเชื่อมต่อผิดพลาด: ' + e.message, 'error');
+  } finally {
+    showLoading(false);
+  }
 }
 
-async function loadDashboard(){
-  try{
-    const url=SCRIPT_URL+"?action=dashboard&staffEmail="+encodeURIComponent(staffEmail);
-    const res=await fetch(url);
-    const d=await res.json();
-    if(!d.success){ showToast(d.error||'โหลด Dashboard ล้มเหลว','error'); return; }
-    const s=d.stats;
-    document.getElementById('sAvail').textContent=s.available;
-    document.getElementById('sPending').textContent=s.pending;
-    document.getElementById('sSlip').textContent=s.slip_uploaded;
-    document.getElementById('sVerified').textContent=s.verified;
-    document.getElementById('sPaid').textContent=s.paid;
-    document.getElementById('sCancelled').textContent=s.cancelled;
-    document.getElementById('rTotal').textContent='฿'+fmt(s.revenue_total);
-    document.getElementById('rPaid').textContent='฿'+fmt(s.revenue_paid);
-    document.getElementById('rPending').textContent='฿'+fmt(s.revenue_pending);
-    document.getElementById('rCancelled').textContent='฿'+fmt(s.revenue_cancelled);
-  }catch(e){ showToast('Dashboard error: '+e.message,'error'); }
-}
+// ── CALCULATE STATS (2,000 THB UNIFIED FOR ALL TABLES) ───
+function calculateLocalStats(bookings) {
+  const stats = {
+    total: 0, available: 100, pending: 0, slip_uploaded: 0,
+    verified: 0, paid: 0, cancelled: 0, expired: 0,
+    revenue_total: 0, revenue_paid: 0, revenue_pending: 0, revenue_cancelled: 0
+  };
 
-async function loadBookings(){
-  try{
-    const url=SCRIPT_URL+"?action=staffBookings&staffEmail="+encodeURIComponent(staffEmail);
-    const res=await fetch(url);
-    const d=await res.json();
-    if(!d.success){ showToast(d.error||'Unauthorized','error'); return; }
-    allBookings=d.bookings||[];
-    currentBookings=allBookings;
-    filterTable();
-  }catch(e){ showToast('โหลดรายการล้มเหลว: '+e.message,'error'); }
-}
+  const occupiedTables = new Set();
 
-// ── FILTER / RENDER ───────────────────────────────────────
-function filterTable(){
-  const bid   = document.getElementById('fBid').value.trim().toLowerCase();
-  const name  = document.getElementById('fName').value.trim().toLowerCase();
-  const phone = document.getElementById('fPhone').value.trim();
-  const table = document.getElementById('fTable').value.trim();
-  const st    = document.getElementById('fStatus').value;
-
-  const filtered=allBookings.filter(b=>{
-    if(bid   && !String(b.booking_id||'').toLowerCase().includes(bid))   return false;
-    if(name  && !String(b.name||'').toLowerCase().includes(name))         return false;
-    if(phone && !String(b.phone||'').includes(phone))                     return false;
-    if(table && !String(b.table_no||'').includes(table))                  return false;
-    if(st    && b.status!==st)                                            return false;
-    return true;
+  bookings.forEach(b => {
+    stats.total++;
+    const st = b.status || 'available';
+    const amt = 2000; // ทุกโต๊ะ 2,000 บาท สุทธิ
+    if (['pending', 'slip_uploaded', 'verified', 'paid'].includes(st)) {
+      occupiedTables.add(b.table_no);
+    }
+    if (stats[st] !== undefined) stats[st]++;
+    stats.revenue_total += amt;
+    if (st === 'paid') stats.revenue_paid += amt;
+    if (['pending', 'slip_uploaded'].includes(st)) stats.revenue_pending += amt;
+    if (st === 'cancelled') stats.revenue_cancelled += amt;
   });
 
-  document.getElementById('tableCount').textContent=filtered.length+' รายการ';
-  renderTable(filtered);
+  stats.available = Math.max(0, 100 - occupiedTables.size);
+  return stats;
 }
 
-const STATUS_LABELS={
-  available:'ว่าง',pending:'รอชำระ',slip_uploaded:'รอตรวจสลิป',
-  verified:'ยืนยันแล้ว',paid:'ชำระแล้ว',cancelled:'ยกเลิก',expired:'หมดอายุ'
-};
+function renderStats(s) {
+  document.getElementById('sAvail').textContent = s.available ?? 100;
+  document.getElementById('sPending').textContent = s.pending ?? 0;
+  document.getElementById('sSlip').textContent = s.slip_uploaded ?? 0;
+  document.getElementById('sVerified').textContent = s.verified ?? 0;
+  document.getElementById('sPaid').textContent = s.paid ?? 0;
+  document.getElementById('sCancelled').textContent = s.cancelled ?? 0;
 
-function renderTable(rows){
-  const container=document.getElementById('tableContainer');
-  if(!rows.length){
-    container.innerHTML='<div class="empty-state"><div class="es-ico">🔍</div><div>ไม่พบรายการ</div></div>';
+  document.getElementById('rTotal').textContent = '฿' + (s.revenue_total || 0).toLocaleString();
+  document.getElementById('rPaid').textContent = '฿' + (s.revenue_paid || 0).toLocaleString();
+  document.getElementById('rPending').textContent = '฿' + (s.revenue_pending || 0).toLocaleString();
+  document.getElementById('rCancelled').textContent = '฿' + (s.revenue_cancelled || 0).toLocaleString();
+}
+
+// ── RENDER TABLE ──────────────────────────────────────────
+function renderTable(list) {
+  document.getElementById('tableCount').textContent = list.length + ' รายการ';
+  const c = document.getElementById('tableContainer');
+
+  if (!list || list.length === 0) {
+    c.innerHTML = `
+      <div style="padding: 48px; text-align: center; color: var(--muted);">
+        <div style="font-size: 32px; margin-bottom: 8px;">🪑</div>
+        <div style="font-size: 15px; font-weight: 700; color: #fff;">ยังไม่มีรายการจองในระบบ</div>
+        <div style="font-size: 12px; margin-top: 4px;">โต๊ะทั้งหมด 100 โต๊ะว่างพร้อมให้บริการ (ราคา ฿2,000 ทุกโต๊ะ)</div>
+      </div>`;
     return;
   }
 
-  let html=`<table><thead><tr>
-    <th>Booking ID</th><th>โต๊ะ</th><th>สถานะ</th><th>ชื่อ</th><th>เบอร์</th>
-    <th>ยอด</th><th>เวลาจอง</th><th>สลิป</th><th>Actions</th>
-  </tr></thead><tbody>`;
+  let rows = list.map(b => {
+    const bid = b.booking_id || b.bookingId || b.TableNo || '—';
+    const tNo = (b.table_no !== undefined && b.table_no !== null && b.table_no !== '') ? b.table_no :
+                (b.Table !== undefined ? b.Table :
+                (b.Status && !isNaN(b.Status) ? b.Status : '—'));
+    const custName = b.name || b.customerName || (b.Phone && isNaN(b.Phone) ? b.Phone : '—');
+    const custPhone = b.phone || b.customerPhone || (b.Note && !isNaN(b.Note) ? b.Note : '—');
+    const st = b.status || (b.Name && typeof b.Name === 'string' && ['pending','paid','verified','slip_uploaded','cancelled','expired'].includes(b.Name) ? b.Name : 'pending');
+    const amount = 2000; // ทุกโต๊ะ 2,000 บาท
+    const bAt = b.booked_at || b.PaidTime || b.time || '';
 
-  rows.forEach(b=>{
-    const st=b.status||'available';
-    const canVerify=st==='slip_uploaded';
-    const canPaid=['verified','slip_uploaded','pending'].includes(st);
-    const canChange=!['paid','cancelled','expired'].includes(st);
-    const canCancel=!['paid','cancelled'].includes(st);
+    return `
+      <tr>
+        <td style="font-family: 'JetBrains Mono'; font-weight: 700; color: var(--blue);">${escHtml(bid)}</td>
+        <td>
+          <span style="font-family: 'JetBrains Mono'; font-weight: 800; font-size: 15px; color: #fff; background: rgba(0, 240, 255, 0.1); padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border);">
+            โต๊ะ ${tNo}
+          </span>
+        </td>
+        <td><b>${escHtml(custName)}</b></td>
+        <td style="font-family: 'JetBrains Mono';">${escHtml(custPhone)}</td>
+        <td style="font-family: 'JetBrains Mono'; font-weight: 700; color: var(--jade);">฿${amount.toLocaleString()}</td>
+        <td><span class="badge ${st}">${getStatusBadgeText(st)}</span></td>
+        <td style="font-size: 11.5px; color: var(--muted);">${fmtDate(bAt)}</td>
+        <td>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            ${b.slip_url ? `<button class="btn ghost" style="padding: 4px 8px; font-size: 11px;" onclick="viewSlip('${escHtml(b.slip_url)}')">🖼️ ดูสลิป</button>` : ''}
+            ${st === 'slip_uploaded' ? `<button class="btn success" style="padding: 4px 8px; font-size: 11px;" onclick="verifySlip('${escHtml(bid)}')">✅ อนุมัติ</button>` : ''}
+            ${st === 'verified' || st === 'pending' ? `<button class="btn primary" style="padding: 4px 8px; font-size: 11px;" onclick="markPaid('${escHtml(bid)}')">💰 ชำระแล้ว</button>` : ''}
+            ${['pending', 'slip_uploaded', 'verified'].includes(st) ? `
+              <button class="btn warning" style="padding: 4px 8px; font-size: 11px;" onclick="openChangeTable('${escHtml(bid)}', ${tNo})">🔀 ย้ายโต๊ะ</button>
+              <button class="btn danger" style="padding: 4px 8px; font-size: 11px;" onclick="cancelBooking('${escHtml(bid)}')">❌ ยกเลิก</button>
+            ` : ''}
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
 
-    html+=`<tr>
-      <td><span style="font-family:'Outfit',monospace;font-size:12px;color:var(--blue)">${escHtml(b.booking_id)}</span></td>
-      <td><b style="font-size:16px">${escHtml(b.table_no)}</b></td>
-      <td><span class="status-badge ${st}">${STATUS_LABELS[st]||st}</span></td>
-      <td>${escHtml(b.name)}</td>
-      <td>${escHtml(b.phone)}</td>
-      <td style="color:var(--jade);font-weight:700">฿${fmt(b.amount)}</td>
-      <td style="color:var(--muted);font-size:12px">${fmtDate(b.booked_at)}</td>
-      <td>${b.slip_url?`<button class="act-btn slip-view" onclick="viewSlip('${escHtml(b.slip_url)}')">🖼️ ดู</button>`:'<span style="color:var(--muted);font-size:11px">—</span>'}</td>
-      <td><div class="action-btns">
-        ${canVerify?`<button class="act-btn verify" onclick="verifySlip('${escHtml(b.booking_id)}')">✅ ยืนยันสลิป</button>`:''}
-        ${canPaid?`<button class="act-btn paid" onclick="markPaid('${escHtml(b.booking_id)}')">💰 Paid</button>`:''}
-        ${canChange?`<button class="act-btn change" onclick="openChangeTable('${escHtml(b.booking_id)}','${escHtml(b.table_no)}')">🔄 เปลี่ยนโต๊ะ</button>`:''}
-        ${canCancel?`<button class="act-btn cancel" onclick="openCancel('${escHtml(b.booking_id)}','${escHtml(b.table_no)}')">❌ ยกเลิก</button>`:''}
-        <button class="act-btn audit" onclick="openAudit('${escHtml(b.booking_id)}')">📋 Log</button>
-      </div></td>
-    </tr>`;
+  c.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Booking ID</th>
+          <th>โต๊ะ</th>
+          <th>ชื่อลูกค้า</th>
+          <th>เบอร์โทร</th>
+          <th>ราคา</th>
+          <th>สถานะ</th>
+          <th>เวลาจอง</th>
+          <th>จัดการ</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function getStatusBadgeText(st) {
+  const map = {
+    pending: '⏳ รอชำระ',
+    slip_uploaded: '📥 รอตรวจสลิป',
+    verified: '🟣 ยืนยันสลิป',
+    paid: '✅ ชำระแล้ว',
+    cancelled: '❌ ยกเลิก',
+    expired: '⌛ หมดอายุ'
+  };
+  return map[st] || st;
+}
+
+// ── FILTER TABLE (FAST CLIENT-SIDE DEBOUNCED FILTER) ─────
+function filterTable() {
+  const bid = document.getElementById('fBid').value.toLowerCase().trim();
+  const name = document.getElementById('fName').value.toLowerCase().trim();
+  const phone = document.getElementById('fPhone').value.trim();
+  const table = document.getElementById('fTable').value.trim();
+  const status = document.getElementById('fStatus').value;
+
+  const filtered = allBookings.filter(b => {
+    if (bid && !String(b.booking_id || '').toLowerCase().includes(bid)) return false;
+    if (name && !String(b.name || '').toLowerCase().includes(name)) return false;
+    if (phone && !String(b.phone || '').includes(phone)) return false;
+    if (table && String(b.table_no) !== table) return false;
+    if (status && b.status !== status) return false;
+    return true;
   });
 
-  html+='</tbody></table>';
-  container.innerHTML=html;
+  renderTable(filtered);
 }
 
-// ── ACTIONS ───────────────────────────────────────────────
-
-async function postAction(action, extra={}){
-  showLoading(true);
-  try{
-    const res=await fetch(SCRIPT_URL,{
-      method:'POST',
-      body:JSON.stringify({action, staffEmail, ...extra})
+// ── POST ACTION WRAPPER ──────────────────────────────────
+async function postAction(action, extra = {}) {
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action,
+        staffEmail,
+        staffUser: staffUsername,
+        ip: clientNetInfo.ip,
+        mac: clientNetInfo.mac,
+        ...extra
+      })
     });
     return await res.json();
-  }catch(e){ return {success:false,error:e.message}; }
-  finally{ showLoading(false); }
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
 }
 
-async function verifySlip(bookingId){
-  if(!confirm('ยืนยันสลิปการโอนเงิน Booking '+bookingId+'?')) return;
-  const d=await postAction('verifySlip',{bookingId});
-  showToast(d.success?'✅ ยืนยันสลิปแล้ว':'❌ '+d.error, d.success?'success':'error');
-  if(d.success) loadData();
+// ── VERIFY SLIP ──────────────────────────────────────────
+async function verifySlip(bookingId) {
+  if (!confirm(`ยืนยันตรวจสอบสลิป Booking: ${bookingId}?`)) return;
+  showLoading(true);
+  const d = await postAction('verifySlip', { bookingId });
+  showLoading(false);
+  showToast(d.success ? '✅ ยืนยันสลิปเรียบร้อย' : '❌ ' + d.error, d.success ? 'success' : 'error');
+  if (d.success) loadData();
 }
 
-async function markPaid(bookingId){
-  if(!confirm('ยืนยันชำระเงิน Booking '+bookingId+'?')) return;
-  const d=await postAction('markPaid',{bookingId});
-  showToast(d.success?'✅ Mark Paid เรียบร้อย':'❌ '+d.error, d.success?'success':'error');
-  if(d.success) loadData();
+// ── MARK PAID ────────────────────────────────────────────
+async function markPaid(bookingId) {
+  if (!confirm(`ยืนยันการรับชำระเงินเรียบร้อย Booking: ${bookingId}?`)) return;
+  showLoading(true);
+  const d = await postAction('markPaid', { bookingId });
+  showLoading(false);
+  showToast(d.success ? '💰 บันทึกชำระเงินสำเร็จ' : '❌ ' + d.error, d.success ? 'success' : 'error');
+  if (d.success) loadData();
 }
 
-// ── CANCEL MODAL ──────────────────────────────────────────
-function openCancel(bookingId, tableNo){
-  const overlay=document.createElement('div');
-  overlay.className='overlay'; overlay.id='overlay';
-  overlay.innerHTML=`
+// ── CANCEL BOOKING ───────────────────────────────────────
+async function cancelBooking(bookingId) {
+  const reason = prompt('ระบุเหตุผลการยกเลิกการจอง:');
+  if (reason === null) return;
+  showLoading(true);
+  const d = await postAction('cancel', { bookingId, reason: reason.trim() || 'Staff cancelled' });
+  showLoading(false);
+  showToast(d.success ? '❌ ยกเลิกการจองเรียบร้อย' : '❌ ' + d.error, d.success ? 'success' : 'error');
+  if (d.success) loadData();
+}
+
+// ── CHANGE TABLE MODAL (ALL TABLES 2,000 THB) ────────────
+let selectedNewTable = null;
+function openChangeTable(bookingId, curTable) {
+  selectedNewTable = null;
+  const occ = new Set(allBookings.filter(b => ['pending', 'slip_uploaded', 'verified', 'paid'].includes(b.status)).map(b => Number(b.table_no)));
+
+  let grid = '';
+  for (let i = 1; i <= 100; i++) {
+    const isOcc = occ.has(i) && i !== curTable;
+    grid += `<button class="t-btn ${isOcc ? 'occ' : ''}" ${isOcc ? 'disabled' : ''} onclick="pickNewTable(${i})">${i}</button>`;
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay'; overlay.id = 'overlay';
+  overlay.innerHTML = `
     <div class="modal">
       <button class="close-x" onclick="closeModal()">×</button>
-      <h3>❌ ยกเลิกการจอง</h3>
-      <div class="msub">Booking: ${escHtml(bookingId)} | โต๊ะ: ${escHtml(tableNo)}</div>
-      <div class="field"><label>เหตุผลการยกเลิก *</label>
-        <textarea id="cancelReason" placeholder="เช่น ลูกค้าโทรขอยกเลิก / ไม่ติดต่อกลับ"></textarea>
+      <h3 style="font-size: 18px; font-weight: 800; color: #fff;">🔀 ย้ายโต๊ะการจอง</h3>
+      <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">Booking: <b>${escHtml(bookingId)}</b> (โต๊ะเดิม: ${curTable})</div>
+      
+      <div style="font-size: 12px; font-weight: 700; color: var(--blue); margin-top: 16px;">เลือกโต๊ะใหม่ที่ต้องการย้าย (ราคา ฿2,000 ทุกโต๊ะ):</div>
+      <div class="table-picker-grid" id="pickerGrid">${grid}</div>
+      <div id="newTableInfo" style="font-size: 12.5px; color: var(--jade); min-height: 20px; font-weight: 700;">กรุณาคลิกเลือกโต๊ะว่าง</div>
+
+      <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px;">
+        <button class="btn ghost" onclick="closeModal()">ยกเลิก</button>
+        <button class="btn primary" onclick="confirmChangeTable('${escHtml(bookingId)}')">ยืนยันการย้ายโต๊ะ</button>
       </div>
-      <button class="btn danger" style="width:100%;margin-top:4px" onclick="confirmCancel('${escHtml(bookingId)}')">ยืนยันการยกเลิก</button>
     </div>`;
-  overlay.addEventListener('click',e=>{ if(e.target.id==='overlay') closeModal(); });
+
+  overlay.addEventListener('click', e => { if (e.target.id === 'overlay') closeModal(); });
   document.body.appendChild(overlay);
-  setTimeout(()=>overlay.classList.add('show'),10);
+  setTimeout(() => overlay.classList.add('show'), 10);
 }
 
-async function confirmCancel(bookingId){
-  const reason=document.getElementById('cancelReason').value.trim();
-  if(!reason){ showToast('กรุณาใส่เหตุผล','error'); return; }
+function pickNewTable(n) {
+  document.querySelectorAll('#pickerGrid .t-btn').forEach(b => b.classList.remove('selected'));
+  const allBtn = Array.from(document.querySelectorAll('#pickerGrid .t-btn'));
+  if (allBtn[n - 1]) allBtn[n - 1].classList.add('selected');
+  selectedNewTable = n;
+  document.getElementById('newTableInfo').innerHTML = `โต๊ะที่เลือกใหม่: <b>โต๊ะ ${n}</b> — ราคา <b>฿2,000 บาท</b> (สำหรับ 4 ท่าน)`;
+}
+
+async function confirmChangeTable(bookingId) {
+  if (!selectedNewTable) { showToast('กรุณาเลือกโต๊ะใหม่', 'error'); return; }
   closeModal();
-  const d=await postAction('cancel',{bookingId,reason});
-  showToast(d.success?'✅ ยกเลิกเรียบร้อย':'❌ '+d.error, d.success?'success':'error');
-  if(d.success) loadData();
-}
-
-// ── CHANGE TABLE MODAL ────────────────────────────────────
-let selectedNewTable=null;
-function openChangeTable(bookingId, currentTable){
-  selectedNewTable=null;
-  const occupiedTables=new Set(allBookings.filter(b=>
-    !['cancelled','expired'].includes(b.status) && String(b.table_no)!==String(currentTable)
-  ).map(b=>String(b.table_no)));
-
-  let pickerHtml='<div class="table-picker">';
-  for(let i=1;i<=100;i++){
-    const isOcc=occupiedTables.has(String(i));
-    const isCur=String(i)===String(currentTable);
-    pickerHtml+=`<div class="tpick${isOcc||isCur?' occupied':''}" id="tp_${i}" onclick="selectNewTable(${i})">${i}</div>`;
-  }
-  pickerHtml+='</div>';
-
-  const overlay=document.createElement('div');
-  overlay.className='overlay'; overlay.id='overlay';
-  overlay.innerHTML=`
-    <div class="modal wide">
-      <button class="close-x" onclick="closeModal()">×</button>
-      <h3>🔄 เปลี่ยนโต๊ะ</h3>
-      <div class="msub">Booking: ${escHtml(bookingId)} | โต๊ะปัจจุบัน: <b>${escHtml(currentTable)}</b></div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:8px">เลือกโต๊ะใหม่ (โต๊ะสีจาง = ถูกจองแล้ว)</p>
-      ${pickerHtml}
-      <div id="newTableInfo" style="font-size:13px;color:var(--muted);margin-top:8px;min-height:20px;"></div>
-      <button class="btn primary" style="margin-top:16px;width:100%" onclick="confirmChangeTable('${escHtml(bookingId)}')">ยืนยันการย้ายโต๊ะ</button>
-    </div>`;
-  overlay.addEventListener('click',e=>{ if(e.target.id==='overlay') closeModal(); });
-  document.body.appendChild(overlay);
-  setTimeout(()=>overlay.classList.add('show'),10);
-}
-
-function selectNewTable(n){
-  document.querySelectorAll('.tpick.selected').forEach(el=>el.classList.remove('selected'));
-  const el=document.getElementById('tp_'+n);
-  if(el){ el.classList.add('selected'); }
-  selectedNewTable=n;
-  const zone=n>=1&&n<=31?'B':'A';
-  const price=n>=1&&n<=31?1600:2000;
-  const info=document.getElementById('newTableInfo');
-  if(info) info.innerHTML=`โต๊ะ <b>${n}</b> — Zone <b>${zone}</b> — ราคา <b>฿${price.toLocaleString()}</b>`;
-}
-
-async function confirmChangeTable(bookingId){
-  if(!selectedNewTable){ showToast('กรุณาเลือกโต๊ะใหม่','error'); return; }
-  closeModal();
-  const d=await postAction('changeTable',{bookingId,newTableNo:selectedNewTable});
-  if(d.success){
-    showToast(`✅ ย้ายไปโต๊ะ ${d.newTable} เรียบร้อย (฿${fmt(d.newPrice)})`,'success');
+  showLoading(true);
+  const d = await postAction('changeTable', { bookingId, newTableNo: selectedNewTable });
+  showLoading(false);
+  if (d.success) {
+    showToast(`✅ ย้ายไปโต๊ะ ${d.newTable} เรียบร้อย (฿2,000)`, 'success');
     loadData();
   } else {
-    showToast('❌ '+d.error,'error');
+    showToast('❌ ' + d.error, 'error');
   }
 }
 
 // ── VIEW SLIP ─────────────────────────────────────────────
-function viewSlip(url){
-  const overlay=document.createElement('div');
-  overlay.className='overlay'; overlay.id='overlay';
-  overlay.innerHTML=`
+function viewSlip(url) {
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay'; overlay.id = 'overlay';
+  overlay.innerHTML = `
     <div class="modal">
       <button class="close-x" onclick="closeModal()">×</button>
-      <h3>🖼️ หลักฐานการชำระเงิน</h3>
-      <img src="${escHtml(url)}" class="slip-img" onerror="this.alt='โหลดรูปไม่ได้'">
-      <a href="${escHtml(url)}" target="_blank" class="btn ghost" style="margin-top:12px;display:flex;">🔗 เปิดใน Drive</a>
+      <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">🖼️ หลักฐานการชำระเงิน</h3>
+      <img src="${escHtml(url)}" style="max-width: 100%; border-radius: 12px; border: 1px solid var(--border);" onerror="this.alt='ไม่สามารถโหลดรูปภาพได้'">
+      <a href="${escHtml(url)}" target="_blank" class="btn ghost" style="margin-top: 12px; display: inline-flex;">🔗 เปิดใน Google Drive</a>
     </div>`;
-  overlay.addEventListener('click',e=>{ if(e.target.id==='overlay') closeModal(); });
+  overlay.addEventListener('click', e => { if (e.target.id === 'overlay') closeModal(); });
   document.body.appendChild(overlay);
-  setTimeout(()=>overlay.classList.add('show'),10);
+  setTimeout(() => overlay.classList.add('show'), 10);
 }
 
-// ── AUDIT LOG MODAL ───────────────────────────────────────
-async function openAudit(bookingId){
+// ── VIEW LOGIN ACCESS LOGS (IP + MAC LOGS) ────────────────
+async function openLoginLogs() {
   showLoading(true);
-  let logs=[];
-  try{
-    const res=await fetch(SCRIPT_URL+`?action=auditLog&staffEmail=${encodeURIComponent(staffEmail)}&bookingId=${encodeURIComponent(bookingId)}`);
-    const d=await res.json();
-    if(d.success) logs=d.logs;
-  }catch(e){ showToast('โหลด Log ล้มเหลว','error'); }
-  finally{ showLoading(false); }
+  let logs = [];
+  try {
+    const res = await fetch(`${SCRIPT_URL}?action=auditLog&staffEmail=${encodeURIComponent(staffEmail)}`);
+    const d = await res.json();
+    if (d.success) logs = d.logs || [];
+  } catch (e) { showToast('โหลด Log ล้มเหลว', 'error'); }
+  finally { showLoading(false); }
 
-  let rows=logs.length?logs.map(l=>`
+  let rows = logs.length ? logs.slice(0, 100).map(l => `
     <tr>
-      <td style="font-size:11px;color:var(--muted)">${fmtDate(l.timestamp)}</td>
+      <td style="font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono';">${fmtDate(l.timestamp)}</td>
       <td><b>${escHtml(l.action)}</b></td>
-      <td style="color:var(--muted)">${escHtml(l.done_by)}</td>
-      <td>${escHtml(l.before_status)} → ${escHtml(l.after_status)}</td>
-      <td style="font-size:11px;color:var(--muted)">${escHtml(l.note)}</td>
-    </tr>`).join(''):'<tr><td colspan="5" style="text-align:center;color:var(--muted)">ไม่มี Log</td></tr>';
+      <td style="color: var(--blue); font-weight: 700;">${escHtml(l.done_by)}</td>
+      <td><span class="badge ${l.after_status === 'paid' ? 'paid' : 'pending'}">${escHtml(l.before_status || '—')} → ${escHtml(l.after_status || '—')}</span></td>
+      <td style="font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono';">${escHtml(l.note)}</td>
+    </tr>`).join('') : '<tr><td colspan="5" style="text-align: center; color: var(--muted); padding: 20px;">ไม่มีข้อมูล Log</td></tr>';
 
-  const overlay=document.createElement('div');
-  overlay.className='overlay'; overlay.id='overlay';
-  overlay.innerHTML=`
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay'; overlay.id = 'overlay';
+  overlay.innerHTML = `
     <div class="modal wide">
       <button class="close-x" onclick="closeModal()">×</button>
-      <h3>📋 Audit Log</h3>
-      <div class="msub">Booking: ${escHtml(bookingId)}</div>
-      <div style="overflow-x:auto">
-      <table class="audit-table">
-        <thead><tr><th>เวลา</th><th>Action</th><th>โดย</th><th>สถานะ</th><th>หมายเหตุ</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table></div>
+      <h3 style="font-size: 17px; font-weight: 800; color: #fff;">📜 บันทึกประวัติการเข้าใช้งานและกิจกรรม (Audit & Login Logs)</h3>
+      <div style="font-size: 12px; color: var(--muted); margin: 4px 0 16px;">บันทึก IP, อุปกรณ์, และทุกคำสั่งในระบบ</div>
+      <div style="overflow-x: auto; max-height: 400px;">
+        <table>
+          <thead><tr><th>เวลา</th><th>การกระทำ</th><th>ผู้ดำเนินการ</th><th>สถานะ</th><th>รายละเอียด / IP / MAC</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
     </div>`;
-  overlay.addEventListener('click',e=>{ if(e.target.id==='overlay') closeModal(); });
+  overlay.addEventListener('click', e => { if (e.target.id === 'overlay') closeModal(); });
   document.body.appendChild(overlay);
-  setTimeout(()=>overlay.classList.add('show'),10);
+  setTimeout(() => overlay.classList.add('show'), 10);
 }
 
 // ── EXPORT CSV ────────────────────────────────────────────
-async function exportCSV(){
+async function exportCSV() {
   showLoading(true);
-  try{
-    const url=SCRIPT_URL+`?action=export&staffEmail=${encodeURIComponent(staffEmail)}`;
-    const res=await fetch(url);
-    const csv=await res.text();
-    const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='vip_bookings_'+new Date().toISOString().slice(0,10)+'.csv';
+  try {
+    const url = `${SCRIPT_URL}?action=export&staffEmail=${encodeURIComponent(staffEmail)}`;
+    const res = await fetch(url);
+    const csv = await res.text();
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `vip_bookings_${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
-    showToast('📤 Export CSV เรียบร้อย','success');
-  }catch(e){ showToast('Export ล้มเหลว: '+e.message,'error'); }
-  finally{ showLoading(false); }
+    showToast('📤 Export CSV เรียบร้อยแล้ว', 'success');
+  } catch (e) { showToast('Export ล้มเหลว: ' + e.message, 'error'); }
+  finally { showLoading(false); }
 }
 
 // ── BACKUP ────────────────────────────────────────────────
-async function backupNow(){
-  if(!confirm('ยืนยันสำรองข้อมูล Bookings Sheet?')) return;
-  const d=await postAction('backup',{});
-  showToast(d.success?'💾 Backup: '+d.backupName:'❌ '+d.error, d.success?'success':'error');
+async function backupNow() {
+  if (!confirm('ยืนยันสร้างสำเนาสำรองข้อมูล (Backup) Sheet ปัจจุบัน?')) return;
+  showLoading(true);
+  const d = await postAction('backup', {});
+  showLoading(false);
+  showToast(d.success ? '💾 สำรองข้อมูลสำเร็จ: ' + d.backupName : '❌ ' + d.error, d.success ? 'success' : 'error');
 }
 
-// ── CLOSE MODAL ───────────────────────────────────────────
-function closeModal(){
-  const o=document.getElementById('overlay');
-  if(o){ o.classList.remove('show'); setTimeout(()=>o.remove(),280); }
+// ── RESET ALL TEST DATA (ล้างข้อมูลทดสอบทั้งหมด - ระบบยืนยันรหัสลับความปลอดภัย) ─────────
+async function confirmResetAll() {
+  const inputKey = prompt('🔒 การยืนยันสิทธิ์ความปลอดภัยสูงสุด (SuperAdmin Authorization)\n\n⚠️ คำเตือน: คุณกำลังจะล้างข้อมูลการจองทั้งหมดในระบบ!\n(ระบบจะสร้างแผ่นชีตสำรอง Auto-Backup ให้ก่อนเสมอ)\n\nกรุณากรอกรหัสลับความปลอดภัย (Master Security Key) เพื่อดำเนินการ:');
+  
+  if (inputKey === null) return; // กดยกเลิก
+  
+  const trimmed = inputKey.trim();
+  // ตรวจสอบรหัสลับ (เฉพาะผู้ดูแลระบบที่รู้รหัส admin1234 หรือ RESET เท่านั้น)
+  if (trimmed !== 'admin1234' && trimmed !== 'RESET') {
+    showToast('🚨 รหัสลับความปลอดภัยไม่ถูกต้อง! ปฏิเสธคำสั่งล้างข้อมูล', 'error');
+    // บันทึก Log การพยายามล้างข้อมูลที่ไม่ได้รับอนุญาต
+    postAction('logLogin', {
+      username: staffUsername,
+      status: 'UNAUTHORIZED_RESET_ATTEMPT',
+      ip: clientNetInfo.ip,
+      mac: clientNetInfo.mac,
+      userAgent: clientNetInfo.userAgent,
+      details: 'พยายามใส่รหัสล้างข้อมูลไม่ถูกต้อง'
+    });
+    return;
+  }
+
+  showLoading(true);
+  const d = await postAction('resetAll', { masterKey: trimmed });
+  showLoading(false);
+  if (d.success) {
+    showToast('🧹 ล้างข้อมูลการจองทั้งหมดเรียบร้อยแล้ว (สำรองไว้ที่: ' + (d.backupName || 'Backup') + ')', 'success');
+    loadData();
+  } else {
+    showToast('❌ ล้างข้อมูลล้มเหลว: ' + d.error, 'error');
+  }
+}
+
+function closeModal() {
+  const o = document.getElementById('overlay');
+  if (o) { o.classList.remove('show'); setTimeout(() => o.remove(), 250); }
 }
 
 // ── INIT ──────────────────────────────────────────────────
-window.onload = function(){
-  const saved=localStorage.getItem('staffEmail');
-  if(saved){
-    staffEmail=saved;
+window.onload = async function() {
+  await initClientNetworkInfo();
+  checkLockoutStatus();
+
+  const loggedIn = localStorage.getItem('staffLoggedIn');
+  if (loggedIn === 'true') {
+    staffUsername = localStorage.getItem('staffUsername') || 'admin';
+    staffEmail = localStorage.getItem('staffEmail') || 'admin@thefather.com';
     showApp();
   }
 };
