@@ -402,6 +402,8 @@ function App() {
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerNote, setCustomerNote] = useState('');
+  const [lineUid, setLineUid] = useState('');
+  const [lineName, setLineName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingSuccessData, setBookingSuccessData] = useState(null);
 
@@ -428,17 +430,27 @@ function App() {
 
   useEffect(() => {
     fetchLiveBookings();
+    // โหลดข้อมูลโต๊ะอัปเดตแบบเรียลไทม์ทุก 10 วินาที
+    const timer = setInterval(fetchLiveBookings, 10000);
+
+    // เชื่อมต่อ LINE LIFF SDK
     try {
-      if (window.liff && LIFF_ID !== 'YOUR_LIFF_ID_HERE') {
+      if (window.liff && LIFF_ID) {
         window.liff.init({ liffId: LIFF_ID }).then(() => {
           if (window.liff.isLoggedIn()) {
             window.liff.getProfile().then(p => {
-              if (p.displayName) setCustomerName(p.displayName);
-            });
+              if (p.displayName) {
+                setCustomerName(p.displayName);
+                setLineName(p.displayName);
+              }
+              if (p.userId) setLineUid(p.userId);
+            }).catch(err => console.log("LIFF getProfile error:", err));
           }
-        });
+        }).catch(err => console.log("LIFF init error:", err));
       }
     } catch (e) {}
+
+    return () => clearInterval(timer);
   }, []);
 
   const triggerToast = (msg, type = 'info') => {
@@ -450,10 +462,12 @@ function App() {
   const handleTableClick = (num) => {
     const b = bookings[num];
     const isBooked = b && (b.status === 'paid' || b.status === 'booked' || b.status === 'verified');
+    const isPending = b && (b.status === 'pending' || b.status === 'slip_uploaded');
     
-    if (isBooked) {
+    if (isBooked || isPending) {
       soundFx.playClick();
-      triggerToast(`โต๊ะ #${num} ถูกจองแล้ว (${b.customerName || 'มีผู้จองแล้ว'})`, 'warn');
+      const statusText = isBooked ? 'ถูกจองและชำระเงินแล้ว' : 'กำลังรอดำเนินการชำระเงิน';
+      triggerToast(`โต๊ะ #${num} ${statusText} (${b.customerName || 'ไม่ว่าง'})`, 'warn');
       return;
     }
 
@@ -475,7 +489,7 @@ function App() {
     setHoveredTable(null);
   };
 
-  // Confirm Reservation
+  // Confirm Reservation & Lock Table on Google Sheets
   const handleConfirmReservation = async (e) => {
     e.preventDefault();
     if (!selectedTable) return;
@@ -487,43 +501,63 @@ function App() {
     setIsSubmitting(true);
     soundFx.playClick();
 
-    const bookingId = `BK-${selectedTable}-${Math.floor(1000 + Math.random() * 9000)}`;
-    const newBooking = {
-      bookingId,
-      tableId: selectedTable,
-      customerName: customerName.trim(),
-      phone: customerPhone.trim(),
-      note: customerNote.trim(),
-      amount: UNIFIED_TABLE_PRICE,
-      status: 'pending',
-      time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
-      expireAt: Date.now() + 15 * 60 * 1000
-    };
-
     try {
+      // ส่งคำสั่งจองไปที่ Google Apps Script
+      const payload = {
+        action: 'book',
+        tableNo: selectedTable,
+        table: selectedTable,
+        name: customerName.trim(),
+        phone: customerPhone.trim(),
+        note: customerNote.trim(),
+        lineUid: lineUid || "",
+        lineName: lineName || customerName.trim(),
+        amount: UNIFIED_TABLE_PRICE
+      };
+
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      // กรณีโต๊ะถูกจองซ้ำ หรือมีคนจองตัดหน้า
+      if (!data.success) {
+        soundFx.playClick();
+        triggerToast(data.error || `ขออภัย โต๊ะ #${selectedTable} มีผู้จองไปแล้ว กรุณาเลือกโต๊ะอื่น`, "error");
+        await fetchLiveBookings();
+        return;
+      }
+
+      // จองสำเร็จ — บันทึกสถานะล็อคโต๊ะทันที
+      const officialBooking = {
+        bookingId: data.bookingId,
+        tableId: selectedTable,
+        customerName: customerName.trim(),
+        phone: customerPhone.trim(),
+        note: customerNote.trim(),
+        amount: data.amount || UNIFIED_TABLE_PRICE,
+        status: 'pending',
+        time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+        expireAt: data.expireAt ? new Date(data.expireAt).getTime() : Date.now() + 15 * 60 * 1000
+      };
+
       setBookings(prev => ({
         ...prev,
-        [selectedTable]: newBooking
+        [selectedTable]: officialBooking
       }));
 
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({
-          action: 'createBooking',
-          table: selectedTable,
-          name: customerName,
-          phone: customerPhone,
-          note: customerNote,
-          amount: UNIFIED_TABLE_PRICE,
-          status: 'pending'
-        })
-      }).catch(err => console.log('ซิงค์หลังบ้าน:', err));
-
       soundFx.playSuccess();
-      setBookingSuccessData(newBooking);
-      triggerToast(`จองโต๊ะ #${selectedTable} สำเร็จ! รหัสการจอง: ${bookingId}`, 'success');
+      setBookingSuccessData(officialBooking);
+      triggerToast(`จองโต๊ะ #${selectedTable} สำเร็จ! โต๊ะถูกล็อคแล้ว (รหัส: ${data.bookingId})`, 'success');
+
+      // อัปเดตผังสด
+      fetchLiveBookings();
+
     } catch (err) {
-      triggerToast("เกิดข้อผิดพลาดในการจอง กรุณาลองใหม่อีกครั้ง", "error");
+      console.error('Booking sync error:', err);
+      triggerToast("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์ กรุณาลองใหม่อีกครั้ง", "error");
     } finally {
       setIsSubmitting(false);
     }
