@@ -216,8 +216,8 @@
 const { useState, useEffect, useMemo, useRef, useCallback } = React;
 
 // Backend Google Apps Script Endpoint
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxrxaSAvVFreSCW5H-VJ-CruztGooiC81FsklIoPxF-aGx-gWjKqx_eYsuVA7Ycxo2o/exec";
-const LIFF_ID = "YOUR_LIFF_ID_HERE";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxstHgIHWWb-kMvQHgTtaic1dit7Kr5G27x8Y5z8hlyOxPtU1LTs37T85c0lTRQ5I/exec";
+const LIFF_ID = "2011441538-zz0BCSGs";
 
 // ==========================================
 // UNIFIED FIXED PRICING: 2,000 THB ALL TABLES
@@ -385,26 +385,12 @@ const Icons = {
   )
 };
 
-// Initial Live Activity Demo Data
-const INITIAL_DEMO_BOOKINGS = {
-  3: { tableId: 3, status: 'paid', customerName: 'คุณภานุเดช', time: '18:40' },
-  8: { tableId: 8, status: 'paid', customerName: 'คุณกิตติพงษ์', time: '19:10' },
-  14: { tableId: 14, status: 'pending', customerName: 'คุณวรัญญา', expireAt: Date.now() + 12 * 60 * 1000 },
-  22: { tableId: 22, status: 'paid', customerName: 'คุณวิชัย', time: '17:50' },
-  34: { tableId: 34, status: 'paid', customerName: 'คุณธีรภัทร', time: '18:30' },
-  42: { tableId: 42, status: 'pending', customerName: 'คุณอารียา', expireAt: Date.now() + 8 * 60 * 1000 },
-  50: { tableId: 50, status: 'paid', customerName: 'คุณธนกฤต', time: '19:00' },
-  55: { tableId: 55, status: 'paid', customerName: 'คุณเมธา', time: '18:15' },
-  68: { tableId: 68, status: 'pending', customerName: 'คุณสิรินทร์', expireAt: Date.now() + 14 * 60 * 1000 },
-  77: { tableId: 77, status: 'paid', customerName: 'คุณพัชราภา', time: '19:30' },
-  83: { tableId: 83, status: 'paid', customerName: 'คุณณัฐพล', time: '18:50' },
-  92: { tableId: 92, status: 'paid', customerName: 'คุณศักดา (VIP)', time: '19:45' },
-  98: { tableId: 98, status: 'paid', customerName: 'คุณชลธิชา', time: '18:20' }
-};
+// Initial Bookings State (เริ่มต้นว่างทุกโต๊ะ ไม่มีข้อมูลตัวอย่างจำลอง)
+const INITIAL_DEMO_BOOKINGS = {};
 
 // Main Application
 function App() {
-  const [bookings, setBookings] = useState(INITIAL_DEMO_BOOKINGS);
+  const [bookings, setBookings] = useState({});
   const [selectedTable, setSelectedTable] = useState(null);
   const [filterTab, setFilterTab] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -429,14 +415,14 @@ function App() {
       const res = await fetch(`${SCRIPT_URL}?action=getBookings`);
       const data = await res.json();
       if (Array.isArray(data)) {
-        const map = { ...INITIAL_DEMO_BOOKINGS };
+        const map = {};
         data.forEach(r => {
           if (r.tableId) map[r.tableId] = r;
         });
         setBookings(map);
       }
     } catch (e) {
-      console.warn("ใช้ข้อมูลจำลองออฟไลน์:", e.message);
+      console.warn("ไม่สามารถดึงข้อมูลหลังบ้านได้:", e.message);
     }
   };
 
