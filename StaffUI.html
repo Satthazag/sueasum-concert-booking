@@ -258,6 +258,48 @@ td { padding: 13px 14px; font-size: 13px; vertical-align: middle; }
 .t-btn.occ { background: rgba(100, 116, 139, 0.15); border-color: transparent; color: #475569; cursor: not-allowed; }
 .t-btn.selected { background: var(--pink); border-color: #fff; color: #fff; box-shadow: 0 0 12px var(--pink); }
 
+
+/* ── AUTH TABS & CAPTCHA ── */
+.auth-tabs {
+  display: flex; gap: 8px; margin-bottom: 20px; background: var(--surface2);
+  padding: 4px; border-radius: 12px; border: 1px solid var(--border);
+}
+.auth-tab-btn {
+  flex: 1; padding: 9px; border-radius: 8px; border: none; background: transparent;
+  color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer;
+  transition: all .2s; font-family: inherit;
+}
+.auth-tab-btn.active {
+  background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+}
+.captcha-box {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+  margin: 12px 0;
+}
+.captcha-badge {
+  font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 800;
+  letter-spacing: 2px; color: #38bdf8; background: rgba(56, 189, 248, 0.15);
+  padding: 4px 12px; border-radius: 6px; border: 1px dashed rgba(56, 189, 248, 0.4);
+  user-select: none;
+}
+.captcha-input {
+  flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 10px; color: #fff; font-size: 13px; font-family: 'JetBrains Mono', monospace;
+  outline: none;
+}
+.captcha-refresh {
+  background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 16px;
+}
+.captcha-refresh:hover { color: #fff; }
+
+/* ── SLIP INSPECTION MODAL ── */
+.slip-view-img {
+  max-width: 100%; max-height: 55vh; object-fit: contain; border-radius: 12px;
+  border: 1px solid var(--border); background: #020617; margin: 12px auto; display: block;
+}
+
 /* ── TOAST & LOADER ── */
 .toast {
   position: fixed; bottom: 24px; right: 24px; z-index: 999;
@@ -295,10 +337,20 @@ td { padding: 13px 14px; font-size: 13px; vertical-align: middle; }
 
 <!-- LOGIN SCREEN -->
 <div class="login-screen" id="loginScreen">
-  <div class="login-card">
-    <div style="font-size: 44px; margin-bottom: 12px;">🎤</div>
+  <div class="login-card" style="max-width: 440px;">
+    <div style="font-size: 40px; margin-bottom: 8px;">🎤</div>
     <h1 class="login-title">Staff Portal</h1>
     <p class="login-sub">เดอะฟาเธอร์ (THE FATHER) • วงพ่อจริตแม่</p>
+
+    <!-- Auth Tabs: Login vs Register -->
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab-btn active" id="tabLoginBtn" onclick="switchAuthTab('login')">
+        🔑 เข้าสู่ระบบ
+      </button>
+      <button type="button" class="auth-tab-btn" id="tabRegisterBtn" onclick="switchAuthTab('register')">
+        📝 สมัครสมาชิกสตาฟ
+      </button>
+    </div>
 
     <!-- Lockout Notice (Shows when failed >= 5) -->
     <div id="lockoutNotice" class="lockout-banner" style="display: none;">
@@ -311,13 +363,13 @@ td { padding: 13px 14px; font-size: 13px; vertical-align: middle; }
     <form id="loginForm" onsubmit="handleStaffLoginSubmit(event)">
       <div class="login-group">
         <label class="login-label">ชื่อผู้ใช้ (Username)</label>
-        <input type="text" id="loginUser" class="login-input" placeholder="admin" required autocomplete="username">
+        <input type="text" id="loginUser" class="login-input" placeholder="กรอกชื่อผู้ใช้..." required autocomplete="username">
       </div>
 
       <div class="login-group">
         <label class="login-label">รหัสผ่าน (Password)</label>
         <div style="position: relative;">
-          <input type="password" id="loginPass" class="login-input" placeholder="admin1234" required autocomplete="current-password" style="padding-right: 40px;">
+          <input type="password" id="loginPass" class="login-input" placeholder="กรอกรหัสผ่าน..." required autocomplete="current-password" style="padding-right: 40px;">
           <button type="button" onclick="togglePassVisibility()" style="position: absolute; right: 12px; top: 11px; background: transparent; border: none; color: var(--muted); cursor: pointer;">👁️</button>
         </div>
       </div>
@@ -328,11 +380,68 @@ td { padding: 13px 14px; font-size: 13px; vertical-align: middle; }
         <div>💻 Device/MAC: <b id="loginMacPreview" style="color: var(--pink);">กำลังสร้างรหัสเครื่อง...</b></div>
       </div>
 
+      <!-- Security CAPTCHA for Login -->
+      <div class="captcha-box">
+        <span class="captcha-badge" id="loginCaptchaBadge">--</span>
+        <button type="button" class="captcha-refresh" onclick="refreshLoginCaptcha()" title="เปลี่ยนโจทย์">=</button>
+        <input type="number" id="loginCaptchaInput" class="captcha-input" placeholder="คำตอบ..." required>
+      </div>
+
       <button type="submit" id="btnLoginSubmit" class="btn-login">
         เข้าสู่ระบบ (Sign In)
       </button>
 
       <p id="loginError" style="color: var(--danger); font-size: 12px; margin-top: 14px; display: none; font-weight: 600;"></p>
+    </form>
+
+    <!-- Staff Registration Form -->
+    <form id="registerForm" style="display: none;" onsubmit="handleStaffRegisterSubmit(event)">
+      <div class="login-group">
+        <label class="login-label">ชื่อ - นามสกุล *</label>
+        <input type="text" id="regName" class="login-input" placeholder="ระบุชื่อ-นามสกุลจริง..." required>
+      </div>
+
+      <div class="login-group">
+        <label class="login-label">เบอร์โทรศัพท์ *</label>
+        <input type="tel" id="regPhone" class="login-input" placeholder="เช่น 081-234-5678" required>
+      </div>
+
+      <div class="login-group">
+        <label class="login-label">อีเมลสำหรับยืนยันสิทธิ์ *</label>
+        <input type="email" id="regEmail" class="login-input" placeholder="email@example.com" required>
+        <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">ระบบจะส่งอีเมลยืนยันการลงทะเบียนไปยังอีเมลนี้</div>
+      </div>
+
+      <div class="login-group">
+        <label class="login-label">ชื่อผู้ใช้ (Username) *</label>
+        <input type="text" id="regUser" class="login-input" placeholder="ตั้งชื่อผู้ใช้ภาษาอังกฤษ..." required autocomplete="username">
+      </div>
+
+      <div class="login-group">
+        <label class="login-label">รหัสผ่าน (Password) *</label>
+        <input type="password" id="regPass" class="login-input" placeholder="กำหนดรหัสผ่าน..." required autocomplete="new-password">
+      </div>
+
+      <!-- Secret Employee Code: จ่าหนึ่ง -->
+      <div class="login-group" style="background: rgba(245, 158, 11, 0.08); padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(245, 158, 11, 0.3);">
+        <label class="login-label" style="color: #fbbf24;">🔐 รหัสลับพนักงานร้าน (เฉพาะเจ้าหน้าที่จริง) *</label>
+        <input type="text" id="regSecretCode" class="login-input" placeholder="ระบุรหัสลับพนักงาน..." required style="border-color: rgba(245, 158, 11, 0.5);">
+        <div style="font-size: 10px; color: #fbbf24; margin-top: 2px;">เฉพาะพนักงานของร้านที่มีรหัสยืนยันตัวตนเท่านั้นที่สามารถสมัครได้</div>
+      </div>
+
+      <!-- Security CAPTCHA for Register -->
+      <div class="captcha-box">
+        <span class="captcha-badge" id="regCaptchaBadge">--</span>
+        <button type="button" class="captcha-refresh" onclick="refreshRegCaptcha()" title="เปลี่ยนโจทย์">🔄</button>
+        <input type="number" id="regCaptchaInput" class="captcha-input" placeholder="ผลลัพธ์..." required>
+      </div>
+
+      <button type="submit" id="btnRegisterSubmit" class="btn-login" style="background: linear-gradient(135deg, #10b981, #06b6d4);">
+        📝 ยืนยันการสมัครสมาชิกสตาฟ
+      </button>
+
+      <p id="regError" style="color: var(--danger); font-size: 12px; margin-top: 14px; display: none; font-weight: 600;"></p>
+      <p id="regSuccess" style="color: #34d399; font-size: 12px; margin-top: 14px; display: none; font-weight: 600;"></p>
     </form>
   </div>
 </div>
@@ -347,6 +456,7 @@ td { padding: 13px 14px; font-size: 13px; vertical-align: middle; }
     <div class="nav-right">
       <div class="user-pill">
         <span style="font-weight: 800; color: #fff;" id="displayStaffUser">admin</span>
+        <span id="displayStaffRoleBadge" style="font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.5); background: rgba(239, 68, 68, 0.15); color: #f87171; font-family: 'JetBrains Mono', monospace;">👑 ADMIN</span>
         <span class="net-info" id="displayNetInfo">IP: Loading...</span>
       </div>
       <button class="btn-logout" onclick="signOut()">ออกจากระบบ</button>
@@ -392,10 +502,13 @@ td { padding: 13px 14px; font-size: 13px; vertical-align: middle; }
       </div>
       <div class="btn-group">
         <button class="btn primary" onclick="loadData()">🔄 รีเฟรช</button>
+        <button id="btnBankSettings" class="btn ghost admin-only" onclick="openBankSettingsModal()" style="border-color: rgba(245, 158, 11, 0.5); color: #f59e0b; background: rgba(245, 158, 11, 0.08);">🏦 บัญชีธนาคาร & QR Code</button>
+        <button id="btnLineSettings" class="btn ghost admin-only" onclick="openLineModal()" style="border-color: rgba(6, 199, 85, 0.5); color: #06c755; background: rgba(6, 199, 85, 0.08);">💬 ตั้งค่า LINE สตาฟ</button>
         <button class="btn export" onclick="exportCSV()">📤 Export CSV</button>
-        <button class="btn backup" onclick="backupNow()">💾 Backup Sheet</button>
+        <button id="btnSeedRedTables" class="btn warning admin-only" onclick="seedRedTablesAction()" style="border-color: rgba(239, 68, 68, 0.6); background: rgba(239, 68, 68, 0.15); color: #fca5a5;">🔴 นำเข้า 47 โต๊ะจอง (ผังคอนเสิร์ต)</button>
+        <button id="btnBackup" class="btn backup admin-only" onclick="backupNow()">💾 Backup Sheet</button>
         <button class="btn ghost" onclick="openLoginLogs()">📜 ดู Log การเข้าสู่ระบบ</button>
-        <button class="btn reset" onclick="confirmResetAll()">🧹 ล้างข้อมูลทดสอบทั้งหมด</button>
+        <button id="btnReset" class="btn reset admin-only" onclick="confirmResetAll()">🧹 ล้างข้อมูลทดสอบทั้งหมด</button>
       </div>
     </div>
 
@@ -408,6 +521,150 @@ td { padding: 13px 14px; font-size: 13px; vertical-align: middle; }
       <div id="tableContainer">
         <div style="padding: 40px; text-align: center; color: var(--muted);">⏳ กำลังโหลดข้อมูล...</div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- BANK & QR CODE SETTINGS MODAL (PROTECTED BY MASTER KEY) -->
+<div class="overlay" id="bankModalOverlay">
+  <div class="modal" style="max-width: 540px;">
+    <button class="close-x" onclick="closeBankModal()">&times;</button>
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+      <span style="font-size: 24px;">🏦</span>
+      <div>
+        <h3 style="font-size: 17px; font-weight: 800; color: #fff;">จัดการบัญชีธนาคาร & QR Code รับเงิน</h3>
+        <p style="font-size: 11.5px; color: var(--muted); margin-top: 2px;">ข้อมูลนี้จะแสดงให้ลูกค้าเห็นในหน้าแรกและหน้าต่างชำระเงิน</p>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; font-size: 11.5px; font-weight: 700; color: #cbd5e1; margin-bottom: 4px;">ชื่อธนาคาร *</label>
+      <input id="cfgBankName" class="login-input" placeholder="เช่น ธนาคารกสิกรไทย (KBANK)">
+    </div>
+
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; font-size: 11.5px; font-weight: 700; color: #cbd5e1; margin-bottom: 4px;">เลขที่บัญชีธนาคาร *</label>
+      <input id="cfgBankAccountNo" class="login-input" placeholder="เช่น 004-1234567890" style="font-family: 'JetBrains Mono', monospace;">
+    </div>
+
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; font-size: 11.5px; font-weight: 700; color: #cbd5e1; margin-bottom: 4px;">ชื่อบัญชี *</label>
+      <input id="cfgBankAccountName" class="login-input" placeholder="เช่น บริษัท เดอะฟาเธอร์ จำกัด">
+    </div>
+
+    <div style="margin-bottom: 14px;">
+      <label style="display: block; font-size: 11.5px; font-weight: 700; color: #cbd5e1; margin-bottom: 4px;">ลิงก์รูปภาพ QR Code พร้อมเพย์ (ถ้ามี)</label>
+      <input id="cfgBankQrCode" class="login-input" placeholder="วาง URL รูปภาพ QR Code หรือเว้นว่างเพื่อสร้างอัตโนมัติ">
+    </div>
+
+    <!-- Security Master Key Confirmation -->
+    <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px; padding: 12px; margin-bottom: 16px;">
+      <label style="display: block; font-size: 11.5px; font-weight: 800; color: #f87171; margin-bottom: 4px;">
+        🔒 ยืนยันรหัสความปลอดภัย Master Key *
+      </label>
+      <input type="password" id="cfgBankMasterKey" class="login-input" placeholder="กรอกรหัสเดียวกับล้างข้อมูล..." required style="border-color: rgba(239, 68, 68, 0.5);">
+      <div style="font-size: 10px; color: #f87171; margin-top: 3px;">
+        ⚠️ ต้องระบุรหัสความปลอดภัย Master Key เพื่อป้องกันการแก้ไขบัญชีรับเงินโดยไม่ได้รับอนุญาต
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
+      <button class="btn ghost" onclick="closeBankModal()">ยกเลิก</button>
+      <button class="btn success" onclick="saveBankSettings()">💾 บันทึกข้อมูลบัญชี</button>
+    </div>
+  </div>
+</div>
+
+<!-- SLIP INSPECTION & VERIFICATION MODAL -->
+<div class="overlay" id="slipInspectModalOverlay">
+  <div class="modal" style="max-width: 580px;">
+    <button class="close-x" onclick="closeSlipInspectModal()">&times;</button>
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+      <span style="font-size: 24px;">🧾</span>
+      <div>
+        <h3 style="font-size: 17px; font-weight: 800; color: #fff;" id="slipInspectTitle">ตรวจสอบสลิปโอนเงิน</h3>
+        <p style="font-size: 11.5px; color: var(--muted); margin-top: 2px;" id="slipInspectSub">ตรวจสอบความถูกต้องก่อนอนุมัติยืนยันโต๊ะ</p>
+      </div>
+    </div>
+
+    <div id="slipInspectDetails" style="background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 12px; font-size: 12px; margin-bottom: 12px;">
+      <!-- Populated via JS -->
+    </div>
+
+    <div style="text-align: center; margin-bottom: 16px;">
+      <img id="slipInspectImg" src="" alt="Payment Slip" class="slip-view-img">
+      <a id="slipDriveLink" href="#" target="_blank" style="font-size: 11px; color: var(--blue); text-decoration: underline;">
+        🔗 เปิดดูภาพขนาดเต็มบน Google Drive
+      </a>
+    </div>
+
+    <!-- Mandatory Statement Verification Checklist -->
+    <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+      <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; user-select: none;">
+        <input type="checkbox" id="chkBankStatementVerified" onchange="toggleApproveSlipBtn()" style="width: 20px; height: 20px; margin-top: 2px; accent-color: #10b981; cursor: pointer;">
+        <span style="font-size: 13px; font-weight: 700; color: #34d399; line-height: 1.4;">
+          ✅ ข้าพเจ้าได้ตรวจสอบสเตทเม้นท์บัญชีธนาคารแล้ว ว่ามียอดเงินเข้าจริง ฿2,000.00 บาท ครบถ้วนถูกต้อง
+        </span>
+      </label>
+      <div style="font-size: 11px; color: var(--muted); margin-left: 30px; margin-top: 4px;">
+        * เจ้าหน้าที่ต้องตรวจสอบยอดเงินเข้าบัญชีจริงก่อน จึงจะสามารถกดยืนยันการชำระเงินและอนุมัติโต๊ะได้
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
+      <button class="btn danger" id="btnRejectSlip" onclick="rejectSlipAction()">❌ สลิปไม่ถูกต้อง / ปฏิเสธ</button>
+      <button class="btn success" id="btnApproveSlip" onclick="approveSlipAction()" disabled style="opacity: 0.4; cursor: not-allowed;">✅ ยืนยันสลิปและอนุมัติโต๊ะ</button>
+    </div>
+  </div>
+</div>
+
+<!-- LINE SETTINGS MODAL -->
+<div class="overlay" id="lineModalOverlay">
+  <div class="modal" style="max-width: 560px;">
+    <button class="close-x" onclick="closeLineModal()">&times;</button>
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+      <span style="font-size: 24px;">💬</span>
+      <div>
+        <h3 style="font-size: 17px; font-weight: 800; color: #fff;">ตั้งค่าการแจ้งเตือน LINE สตาฟ</h3>
+        <p style="font-size: 11.5px; color: var(--muted); margin-top: 2px;">แจ้งเตือนเข้า LINE กลุ่ม/สตาฟทันทีเมื่อมีคนจอง หรือมีสลิปโอนเงิน</p>
+      </div>
+    </div>
+
+    <!-- Status badge -->
+    <div id="lineStatusBox" style="margin-bottom: 16px; padding: 10px 14px; border-radius: 10px; background: rgba(0, 240, 255, 0.08); border: 1px solid rgba(0, 240, 255, 0.2); font-size: 12px;">
+      ⏳ กำลังตรวจสอบสถานะการเชื่อมต่อ LINE...
+    </div>
+
+    <div style="margin-bottom: 14px;">
+      <label style="display: block; font-size: 11.5px; font-weight: 700; color: #cbd5e1; margin-bottom: 4px;">
+        1. LINE Channel Access Token (Messaging API)
+      </label>
+      <textarea id="cfgLineToken" rows="2" style="width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 11px; resize: vertical;" placeholder="วาง Channel Access Token (Long-lived)..."></textarea>
+      <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">รับได้จาก LINE Developers Console &gt; Messaging API &gt; Channel access token</div>
+    </div>
+
+    <div style="margin-bottom: 14px;">
+      <label style="display: block; font-size: 11.5px; font-weight: 700; color: #cbd5e1; margin-bottom: 4px;">
+        2. Staff Target ID (User ID หรือ Group ID ที่รับแจ้งเตือน)
+      </label>
+      <input id="cfgLineTargetId" style="width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 12px;" placeholder="เช่น Uxxxxxxxx หรือ Cxxxxxxxx (Group ID)...">
+      <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">ไอดีผู้ใช้ (U...) หรือไอดีกลุ่ม (C...) ที่จะให้บอทส่งข้อความแจ้งเตือนไป</div>
+    </div>
+
+    <div style="margin-bottom: 18px;">
+      <label style="display: block; font-size: 11.5px; font-weight: 700; color: #cbd5e1; margin-bottom: 4px;">
+        3. LINE Notify Token (ทางเลือกสำรอง)
+      </label>
+      <input id="cfgLineNotifyToken" style="width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 12px;" placeholder="วาง LINE Notify Token (ถ้ามี)...">
+    </div>
+
+    <div style="display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
+      <button class="btn ghost" onclick="testLineSend()" style="color: var(--blue); border-color: rgba(0, 240, 255, 0.4);">
+        🔔 ส่งทดสอบเข้า LINE
+      </button>
+      <button class="btn success" onclick="saveLineSettings()">
+        💾 บันทึกการตั้งค่า
+      </button>
     </div>
   </div>
 </div>
@@ -425,9 +682,35 @@ const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 // ── STATE ────────────────────────────────────────────────
 let staffEmail = "admin@thefather.com";
 let staffUsername = "admin";
+let staffRole = "admin";
 let allBookings = [];
 let clientNetInfo = { ip: "127.0.0.1", mac: "00:00:00:00:00:00", userAgent: navigator.userAgent };
 let lockoutTimerInterval = null;
+let prevBookingsCount = null;
+let prevSlipCount = null;
+let staffPollingTimer = null;
+
+// ── AUDIO CHIME FOR STAFF ────────────────────────────────
+function playStaffChime() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+    [587.33, 880, 1174.66].forEach((f, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, now + i * 0.12);
+      gain.gain.setValueAtTime(0.2, now + i * 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.35);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + i * 0.12);
+      osc.stop(now + i * 0.12 + 0.36);
+    });
+  } catch(e) {}
+}
 
 // ── HELPERS ──────────────────────────────────────────────
 function showLoading(v) { document.getElementById('loaderBar').style.display = v ? 'block' : 'none'; }
@@ -550,6 +833,16 @@ async function handleStaffLoginSubmit(e) {
   e.preventDefault();
   if (checkLockoutStatus()) return;
 
+  // Verify Login CAPTCHA
+  const userCaptcha = parseInt(document.getElementById('loginCaptchaInput').value.trim(), 10);
+  if (userCaptcha !== loginCaptchaAnswer) {
+    const errP = document.getElementById('loginError');
+    errP.textContent = '❌ คำตอบความปลอดภัย (CAPTCHA) ไม่ถูกต้อง กรุณาลองใหม่';
+    errP.style.display = 'block';
+    refreshLoginCaptcha();
+    return;
+  }
+
   const user = document.getElementById('loginUser').value.trim();
   const pass = document.getElementById('loginPass').value.trim();
   const errP = document.getElementById('loginError');
@@ -563,6 +856,9 @@ async function handleStaffLoginSubmit(e) {
   try {
     // 1. Verify credentials directly or via backend
     const isLocalAdmin = (user === 'admin' && pass === 'admin1234');
+    const isSatthaza = (user === 'satthaza' && pass === '034720208');
+    const is0811925504 = (user === '0811925504' && pass === '0811925504');
+    const isHardcodedAdmin = isLocalAdmin || isSatthaza || is0811925504;
 
     // Send login audit record to backend Google Sheet (LoginLogs & AuditLog)
     const logRes = await postAction('login', {
@@ -573,36 +869,60 @@ async function handleStaffLoginSubmit(e) {
       userAgent: clientNetInfo.userAgent
     });
 
-    if (isLocalAdmin || logRes.success) {
+    if (isHardcodedAdmin || logRes.success) {
       // Login Success!
       localStorage.removeItem('staff_failed_attempts');
       localStorage.removeItem('staff_lockout_until');
       staffUsername = user;
-      staffEmail = isLocalAdmin ? 'admin@thefather.com' : (logRes.user?.email || 'admin@thefather.com');
+      if (isSatthaza) {
+        staffEmail = 'satthaza@gmail.com';
+        staffRole = 'admin';
+      } else if (is0811925504) {
+        staffEmail = '0811925504@thefather.com';
+        staffRole = 'admin';
+      } else if (isLocalAdmin) {
+        staffEmail = 'admin@thefather.com';
+        staffRole = 'admin';
+      } else {
+        staffEmail = logRes.user?.email || 'staff@thefather.com';
+        staffRole = logRes.user?.role || 'staff';
+      }
       localStorage.setItem('staffLoggedIn', 'true');
       localStorage.setItem('staffUsername', staffUsername);
       localStorage.setItem('staffEmail', staffEmail);
+      localStorage.setItem('staffRole', staffRole);
       showApp();
-      showToast('🎉 เข้าสู่ระบบสำเร็จ ยินดีต้อนรับผู้ดูแลระบบ', 'success');
+      showToast(`🎉 เข้าสู่ระบบสำเร็จ (${staffRole === 'admin' ? 'โหมดผู้ดูแลระบบ Admin' : 'เจ้าหน้าที่สตาฟ'})`, 'success');
     } else {
       recordFailedAttempt();
       errP.textContent = logRes.error || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
       errP.style.display = 'block';
     }
   } catch (err) {
-    if (user === 'admin' && pass === 'admin1234') {
+    if (user === 'satthaza' && pass === '034720208') {
+      staffUsername = 'satthaza';
+      staffEmail = 'satthaza@gmail.com';
+      staffRole = 'admin';
+    } else if (user === '0811925504' && pass === '0811925504') {
+      staffUsername = '0811925504';
+      staffEmail = '0811925504@thefather.com';
+      staffRole = 'admin';
+    } else if (user === 'admin' && pass === 'admin1234') {
       staffUsername = 'admin';
       staffEmail = 'admin@thefather.com';
-      localStorage.setItem('staffLoggedIn', 'true');
-      localStorage.setItem('staffUsername', staffUsername);
-      localStorage.setItem('staffEmail', staffEmail);
-      showApp();
-      showToast('🎉 เข้าสู่ระบบสำเร็จ (โหมดผู้ดูแลระบบ)', 'success');
+      staffRole = 'admin';
     } else {
       recordFailedAttempt();
       errP.textContent = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
       errP.style.display = 'block';
+      return;
     }
+    localStorage.setItem('staffLoggedIn', 'true');
+    localStorage.setItem('staffUsername', staffUsername);
+    localStorage.setItem('staffEmail', staffEmail);
+    localStorage.setItem('staffRole', staffRole);
+    showApp();
+    showToast('🎉 เข้าสู่ระบบสำเร็จ (โหมดผู้ดูแลระบบ Admin)', 'success');
   } finally {
     showLoading(false);
     document.getElementById('btnLoginSubmit').disabled = false;
@@ -612,15 +932,43 @@ async function handleStaffLoginSubmit(e) {
 function showApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
+  staffRole = localStorage.getItem('staffRole') || (staffUsername === 'admin' || staffUsername === 'satthaza' || staffUsername === '0811925504' ? 'admin' : 'staff');
+
   document.getElementById('displayStaffUser').textContent = staffUsername;
+
+  // Update role badge in nav
+  const roleBadge = document.getElementById('displayStaffRoleBadge');
+  if (roleBadge) {
+    if (staffRole === 'admin') {
+      roleBadge.textContent = '👑 ADMIN';
+      roleBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+      roleBadge.style.color = '#f87171';
+      roleBadge.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+    } else {
+      roleBadge.textContent = '🛡️ STAFF';
+      roleBadge.style.background = 'rgba(0, 240, 255, 0.15)';
+      roleBadge.style.color = 'var(--blue)';
+      roleBadge.style.borderColor = 'rgba(0, 240, 255, 0.4)';
+    }
+  }
+
+  // Toggle admin-only controls
+  const adminEls = document.querySelectorAll('.admin-only');
+  adminEls.forEach(el => {
+    el.style.display = (staffRole === 'admin') ? '' : 'none';
+  });
+
   document.getElementById('displayNetInfo').textContent = `IP: ${clientNetInfo.ip} | MAC: ${clientNetInfo.mac.slice(0, 8)}...`;
   loadData();
+  if (staffPollingTimer) clearInterval(staffPollingTimer);
+  staffPollingTimer = setInterval(loadData, 10000); // ตรวจสอบข้อมูลสดทุก 10 วินาที
 }
 
 function signOut() {
   localStorage.removeItem('staffLoggedIn');
   localStorage.removeItem('staffUsername');
   localStorage.removeItem('staffEmail');
+  localStorage.removeItem('staffRole');
   location.reload();
 }
 
@@ -635,8 +983,24 @@ async function loadData() {
 
     if (d.success) {
       allBookings = d.bookings || [];
-      renderStats(d.stats || calculateLocalStats(allBookings));
+      const stats = d.stats || calculateLocalStats(allBookings);
+      renderStats(stats);
       renderTable(allBookings);
+
+      const curSlipCount = stats.slip_uploaded || 0;
+      const curBookingsCount = allBookings.length;
+
+      if (prevBookingsCount !== null) {
+        if (curSlipCount > prevSlipCount) {
+          playStaffChime();
+          showToast('💰 มีลูกค้าส่งสลิปโอนเงินเข้ามาใหม่! กรุณาตรวจสอบ', 'success');
+        } else if (curBookingsCount > prevBookingsCount) {
+          playStaffChime();
+          showToast('🎟️ มีลูกค้าจองโต๊ะเข้ามาใหม่!', 'info');
+        }
+      }
+      prevBookingsCount = curBookingsCount;
+      prevSlipCount = curSlipCount;
     } else {
       showToast('❌ โหลดข้อมูลล้มเหลว: ' + (d.error || 'Unauthorized'), 'error');
     }
@@ -730,9 +1094,9 @@ function renderTable(list) {
         <td style="font-size: 11.5px; color: var(--muted);">${fmtDate(bAt)}</td>
         <td>
           <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-            ${b.slip_url ? `<button class="btn ghost" style="padding: 4px 8px; font-size: 11px;" onclick="viewSlip('${escHtml(b.slip_url)}')">🖼️ ดูสลิป</button>` : ''}
-            ${st === 'slip_uploaded' ? `<button class="btn success" style="padding: 4px 8px; font-size: 11px;" onclick="verifySlip('${escHtml(bid)}')">✅ อนุมัติ</button>` : ''}
-            ${st === 'verified' || st === 'pending' ? `<button class="btn primary" style="padding: 4px 8px; font-size: 11px;" onclick="markPaid('${escHtml(bid)}')">💰 ชำระแล้ว</button>` : ''}
+            ${b.slip_url ? `<button class="btn ghost" style="padding: 4px 8px; font-size: 11px; border-color: rgba(0, 240, 255, 0.4); color: var(--blue);" onclick="openSlipInspectModal('${escHtml(bid)}')">🖼️ ดูสลิป</button>` : ''}
+            ${st === 'slip_uploaded' ? `<button class="btn success" style="padding: 4px 8px; font-size: 11px;" onclick="openSlipInspectModal('${escHtml(bid)}')">🔍 ตรวจสลิป & อนุมัติ</button>` : ''}
+            ${st === 'verified' || st === 'pending' ? `<button class="btn primary" style="padding: 4px 8px; font-size: 11px;" onclick="markPaidWithCheck('${escHtml(bid)}')">💰 ชำระแล้ว</button>` : ''}
             ${['pending', 'slip_uploaded', 'verified'].includes(st) ? `
               <button class="btn warning" style="padding: 4px 8px; font-size: 11px;" onclick="openChangeTable('${escHtml(bid)}', ${tNo})">🔀 ย้ายโต๊ะ</button>
               <button class="btn danger" style="padding: 4px 8px; font-size: 11px;" onclick="cancelBooking('${escHtml(bid)}')">❌ ยกเลิก</button>
@@ -830,6 +1194,22 @@ async function markPaid(bookingId) {
   showLoading(false);
   showToast(d.success ? '💰 บันทึกชำระเงินสำเร็จ' : '❌ ' + d.error, d.success ? 'success' : 'error');
   if (d.success) loadData();
+}
+
+async function markPaidWithCheck(bookingId) {
+  const b = allBookings.find(x => (x.booking_id || x.bookingId || x.TableNo) === bookingId);
+  if (b && b.slip_url) {
+    // มีสลิปแนบอยู่ — เปิดหน้าต่างตรวจสลิปพร้อมช่องติ๊กยืนยันเงินเข้าบัญชีจริง
+    openSlipInspectModal(bookingId);
+  } else {
+    // กรณีชำระเงินสด / จองตรงหน้าร้าน — ยืนยันความถูกต้องก่อน
+    if (!confirm(`ยืนยันการรับชำระเงินเรียบร้อย Booking: ${bookingId}?\nกรุณายืนยันว่าได้ตรวจสอบยอดเงิน ฿2,000 เข้าบัญชีเรียบร้อยแล้ว`)) return;
+    showLoading(true);
+    const d = await postAction('markPaid', { bookingId });
+    showLoading(false);
+    showToast(d.success ? '💰 บันทึกชำระเงินสำเร็จ' : '❌ ' + d.error, d.success ? 'success' : 'error');
+    if (d.success) loadData();
+  }
 }
 
 // ── CANCEL BOOKING ───────────────────────────────────────
@@ -1028,9 +1408,357 @@ window.onload = async function() {
   if (loggedIn === 'true') {
     staffUsername = localStorage.getItem('staffUsername') || 'admin';
     staffEmail = localStorage.getItem('staffEmail') || 'admin@thefather.com';
+    staffRole = localStorage.getItem('staffRole') || (staffUsername === 'admin' || staffUsername === 'satthaza' || staffUsername === '0811925504' ? 'admin' : 'staff');
     showApp();
   }
 };
+
+// ── LINE SETTINGS MODAL FUNCTIONS ────────────────────────
+async function openLineModal() {
+  const overlay = document.getElementById('lineModalOverlay');
+  overlay.className = 'overlay show';
+  const box = document.getElementById('lineStatusBox');
+  box.textContent = '⏳ กำลังตรวจสอบสถานะการเชื่อมต่อ LINE...';
+  try {
+    const res = await fetch(`${SCRIPT_URL}?action=getLineConfig`);
+    const d = await res.json();
+    if (d.success) {
+      document.getElementById('cfgLineTargetId').value = d.targetId || '';
+      let statusHtml = '';
+      if (d.hasChannelToken && d.targetId) {
+        statusHtml = `<span style="color: #34d399; font-weight: 700;">🟢 LINE Messaging API พร้อมใช้งาน</span> (Token: ${d.tokenMasked}, Target: ${d.targetId})`;
+      } else if (d.hasNotifyToken) {
+        statusHtml = `<span style="color: #34d399; font-weight: 700;">🟢 LINE Notify พร้อมใช้งาน</span> (Token: ${d.notifyTokenMasked})`;
+      } else {
+        statusHtml = `<span style="color: #fbbf24; font-weight: 700;">🟡 ยังไม่ได้ตั้งค่า LINE แจ้งเตือนสตาฟ</span> กรุณาใส่ Token ด้านล่าง`;
+      }
+      box.innerHTML = statusHtml;
+    }
+  } catch(e) {
+    box.textContent = '⚠️ ไม่สามารถตรวจสอบสถานะได้: ' + e.message;
+  }
+}
+
+function closeLineModal() {
+  document.getElementById('lineModalOverlay').className = 'overlay';
+}
+
+async function saveLineSettings() {
+  const token = document.getElementById('cfgLineToken').value.trim();
+  const targetId = document.getElementById('cfgLineTargetId').value.trim();
+  const notifyToken = document.getElementById('cfgLineNotifyToken').value.trim();
+
+  showLoading(true);
+  try {
+    const res = await postAction('saveLineConfig', { token, targetId, notifyToken });
+    showLoading(false);
+    if (res.success) {
+      showToast('💾 บันทึกการตั้งค่า LINE สตาฟสำเร็จ!', 'success');
+      openLineModal();
+    } else {
+      showToast('❌ บันทึกล้มเหลว: ' + res.error, 'error');
+    }
+  } catch(e) {
+    showLoading(false);
+    showToast('❌ ข้อผิดพลาด: ' + e.message, 'error');
+  }
+}
+
+async function testLineSend() {
+  showLoading(true);
+  try {
+    const res = await fetch(`${SCRIPT_URL}?action=testLineNotify`);
+    const d = await res.json();
+    showLoading(false);
+    if (d.sent) {
+      showToast('🎉 ส่งข้อความทดสอบเข้า LINE สตาฟสำเร็จแล้ว!', 'success');
+    } else if (d.hasConfig === false) {
+      showToast('⚠️ กรุณากดบันทึก Token และ Target ID ก่อนส่งทดสอบ', 'warn');
+    } else {
+      showToast('❌ ส่งไม่สำเร็จ: ' + (d.error || 'กรุณาตรวจสอบ Token'), 'error');
+    }
+  } catch(e) {
+    showLoading(false);
+    showToast('❌ ข้อผิดพลาด: ' + e.message, 'error');
+  }
+}
+
+
+// ── CAPTCHA SYSTEM ───────────────────────────────────────
+let loginCaptchaAnswer = 0;
+let regCaptchaAnswer = 0;
+
+function generateMathCaptcha() {
+  const n1 = Math.floor(Math.random() * 20) + 5;
+  const n2 = Math.floor(Math.random() * 20) + 1;
+  return { q: `${n1} + ${n2} = ?`, a: n1 + n2 };
+}
+
+function refreshLoginCaptcha() {
+  const c = generateMathCaptcha();
+  loginCaptchaAnswer = c.a;
+  document.getElementById('loginCaptchaBadge').textContent = c.q;
+  document.getElementById('loginCaptchaInput').value = '';
+}
+
+function refreshRegCaptcha() {
+  const c = generateMathCaptcha();
+  regCaptchaAnswer = c.a;
+  document.getElementById('regCaptchaBadge').textContent = c.q;
+  document.getElementById('regCaptchaInput').value = '';
+}
+
+function switchAuthTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('tabLoginBtn').className = isLogin ? 'auth-tab-btn active' : 'auth-tab-btn';
+  document.getElementById('tabRegisterBtn').className = !isLogin ? 'auth-tab-btn active' : 'auth-tab-btn';
+  document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = !isLogin ? 'block' : 'none';
+
+  if (isLogin) refreshLoginCaptcha();
+  else refreshRegCaptcha();
+}
+
+// ── STAFF REGISTRATION SUBMISSION ────────────────────────
+async function handleStaffRegisterSubmit(e) {
+  e.preventDefault();
+  const errP = document.getElementById('regError');
+  const succP = document.getElementById('regSuccess');
+  errP.style.display = 'none';
+  succP.style.display = 'none';
+
+  const name = document.getElementById('regName').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const username = document.getElementById('regUser').value.trim();
+  const password = document.getElementById('regPass').value.trim();
+  const secretCode = document.getElementById('regSecretCode').value.trim();
+  const userCaptcha = parseInt(document.getElementById('regCaptchaInput').value.trim(), 10);
+
+  // 1. ตรวจสอบ CAPTCHA
+  if (userCaptcha !== regCaptchaAnswer) {
+    errP.textContent = '❌ คำตอบความปลอดภัย (CAPTCHA) ไม่ถูกต้อง กรุณาลองใหม่';
+    errP.style.display = 'block';
+    refreshRegCaptcha();
+    return;
+  }
+
+  // 2. ตรวจสอบรหัสลับพนักงาน "จ่าหนึ่ง"
+  if (secretCode !== 'จ่าหนึ่ง' && secretCode !== 'จ่าหนี่ง') {
+    errP.textContent = '❌ รหัสลับพนักงานไม่ถูกต้อง! เฉพาะพนักงานของร้านที่มีรหัสยืนยันตัวตนเท่านั้นที่สามารถสมัครได้';
+    errP.style.display = 'block';
+    return;
+  }
+
+  showLoading(true);
+  document.getElementById('btnRegisterSubmit').disabled = true;
+
+  try {
+    const res = await postAction('registerStaff', {
+      name, phone, email, username, password, secretCode,
+      ip: clientNetInfo.ip,
+      mac: clientNetInfo.mac,
+      userAgent: clientNetInfo.userAgent
+    });
+
+    showLoading(false);
+    document.getElementById('btnRegisterSubmit').disabled = false;
+
+    if (res.success) {
+      succP.innerHTML = `🎉 <b>ลงทะเบียนสำเร็จ!</b><br>ระบบได้ส่งอีเมลยืนยันไปยัง ${email} เรียบร้อยแล้ว<br>กำลังสลับไปยังหน้าเข้าสู่ระบบ...`;
+      succP.style.display = 'block';
+      showToast('🎉 สมัครสตาฟสำเร็จ! ตรวจสอบอีเมลยืนยัน', 'success');
+      setTimeout(() => {
+        switchAuthTab('login');
+        document.getElementById('loginUser').value = username;
+        document.getElementById('loginPass').value = password;
+      }, 2500);
+    } else {
+      errP.textContent = res.error || 'การลงทะเบียนล้มเหลว';
+      errP.style.display = 'block';
+    }
+  } catch(err) {
+    showLoading(false);
+    document.getElementById('btnRegisterSubmit').disabled = false;
+    errP.textContent = 'ข้อผิดพลาด: ' + err.message;
+    errP.style.display = 'block';
+  }
+}
+
+// ── BANK SETTINGS MODAL ──────────────────────────────────
+async function openBankSettingsModal() {
+  document.getElementById('bankModalOverlay').className = 'overlay show';
+  document.getElementById('cfgBankMasterKey').value = '';
+  try {
+    const res = await fetch(`${SCRIPT_URL}?action=getBankConfig`);
+    const d = await res.json();
+    if (d.success && d.config) {
+      document.getElementById('cfgBankName').value = d.config.bankName || 'ธนาคารกสิกรไทย (KBANK)';
+      document.getElementById('cfgBankAccountNo').value = d.config.accountNo || '004-1234567890';
+      document.getElementById('cfgBankAccountName').value = d.config.accountName || 'บริษัท เดอะฟาเธอร์ จำกัด';
+      document.getElementById('cfgBankQrCode').value = d.config.qrCodeUrl || '';
+    }
+  } catch(e) {}
+}
+
+function closeBankModal() {
+  document.getElementById('bankModalOverlay').className = 'overlay';
+}
+
+async function saveBankSettings() {
+  const bankName = document.getElementById('cfgBankName').value.trim();
+  const accountNo = document.getElementById('cfgBankAccountNo').value.trim();
+  const accountName = document.getElementById('cfgBankAccountName').value.trim();
+  const qrCodeUrl = document.getElementById('cfgBankQrCode').value.trim();
+  const masterKey = document.getElementById('cfgBankMasterKey').value.trim();
+
+  if (!masterKey) {
+    showToast('⚠️ กรุณากรอกรหัส Master Key เพื่อยืนยันความปลอดภัย', 'warn');
+    return;
+  }
+
+  showLoading(true);
+  try {
+    const res = await postAction('saveBankConfig', {
+      bankName, accountNo, accountName, qrCodeUrl, masterKey,
+      staffEmail: staffEmail
+    });
+    showLoading(false);
+    if (res.success) {
+      showToast('💾 บันทึกข้อมูลบัญชีธนาคารสำเร็จเรียบร้อย!', 'success');
+      closeBankModal();
+    } else {
+      showToast('❌ ' + res.error, 'error');
+    }
+  } catch(e) {
+    showLoading(false);
+    showToast('❌ ข้อผิดพลาด: ' + e.message, 'error');
+  }
+}
+
+// ── SLIP INSPECTION & APPROVAL MODAL ─────────────────────
+let activeInspectBookingId = null;
+
+function openSlipInspectModal(bookingId) {
+  activeInspectBookingId = bookingId;
+  const b = allBookings.find(x => (x.booking_id || x.bookingId || x.TableNo) === bookingId);
+  if (!b) return;
+
+  const tNo = b.table_no || b.Table || '-';
+  const cName = b.name || b.customerName || '-';
+  const cPhone = b.phone || b.customerPhone || '-';
+  const slipUrl = b.slip_url || '';
+
+  document.getElementById('slipInspectTitle').textContent = `ตรวจสอบสลิป: โต๊ะ #${tNo} (${bookingId})`;
+  document.getElementById('slipInspectSub').textContent = `ผู้จอง: ${cName} • เบอร์โทร: ${cPhone}`;
+
+  document.getElementById('slipInspectDetails').innerHTML = `
+    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+      <span style="color: var(--muted);">รหัสการจอง / บัตร:</span>
+      <b style="color: var(--blue); font-family: 'JetBrains Mono', monospace;">${bookingId}</b>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+      <span style="color: var(--muted);">หมายเลขโต๊ะ:</span>
+      <b style="color: #fff;">โต๊ะ #${tNo} (VIP 4 ท่าน)</b>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+      <span style="color: var(--muted);">ยอดชำระที่ถูกต้อง:</span>
+      <b style="color: #34d399; font-family: 'JetBrains Mono', monospace;">฿2,000.00 บาท</b>
+    </div>
+    <div style="display: flex; justify-content: space-between;">
+      <span style="color: var(--muted);">สถานะปัจจุบัน:</span>
+      <b style="color: #fbbf24;">${b.status || 'slip_uploaded'}</b>
+    </div>
+  `;
+
+  document.getElementById('slipInspectImg').src = slipUrl || 'https://via.placeholder.com/400x500?text=No+Slip+Image';
+  document.getElementById('slipDriveLink').href = slipUrl || '#';
+  document.getElementById('slipDriveLink').style.display = slipUrl ? 'inline' : 'none';
+
+  // Reset statement checkbox & disable approve button until verified
+  const chk = document.getElementById('chkBankStatementVerified');
+  if (chk) chk.checked = false;
+  toggleApproveSlipBtn();
+
+  document.getElementById('slipInspectModalOverlay').className = 'overlay show';
+}
+
+function toggleApproveSlipBtn() {
+  const chk = document.getElementById('chkBankStatementVerified');
+  const btn = document.getElementById('btnApproveSlip');
+  if (btn && chk) {
+    btn.disabled = !chk.checked;
+    btn.style.opacity = chk.checked ? '1' : '0.4';
+    btn.style.cursor = chk.checked ? 'pointer' : 'not-allowed';
+  }
+}
+
+function closeSlipInspectModal() {
+  document.getElementById('slipInspectModalOverlay').className = 'overlay';
+}
+
+async function approveSlipAction() {
+  if (!activeInspectBookingId) return;
+  const chk = document.getElementById('chkBankStatementVerified');
+  if (!chk || !chk.checked) {
+    showToast('⚠️ กรุณาทำเครื่องหมายถูกเพื่อยืนยันว่าได้ตรวจสอบสเตทเม้นท์บัญชีธนาคารแล้ว', 'error');
+    return;
+  }
+  closeSlipInspectModal();
+  showLoading(true);
+  const d = await postAction('verifySlip', { bookingId: activeInspectBookingId });
+  showLoading(false);
+  showToast(d.success ? '✅ ยืนยันสลิปและอนุมัติโต๊ะเรียบร้อย' : '❌ ' + d.error, d.success ? 'success' : 'error');
+  if (d.success) loadData();
+}
+
+// ── SEED RED TABLES (ADMIN ONLY) ──────────────────────────
+async function seedRedTablesAction() {
+  if (staffRole !== 'admin') {
+    showToast('⛔ สิทธิ์เฉพาะผู้ดูแลระบบ (Admin) เท่านั้น', 'error');
+    return;
+  }
+  if (!confirm('ยืนยันนำเข้าข้อมูล 47 โต๊ะจองตามผังคอนเสิร์ต (สถานะ: รอชำระเงิน ฿2,000)?\nโต๊ะที่ถูกกากบาทสีแดงในผังจะถูกบันทึกลงระบบว่าจองแล้ว (รอชำระเงิน) ทันที')) return;
+  showLoading(true);
+  const res = await postAction('seedRedTables', { masterKey: '034720208' });
+  showLoading(false);
+  if (res.success) {
+    showToast('🔴 นำเข้า 47 โต๊ะจองตามผังคอนเสิร์ตเรียบร้อยแล้ว!', 'success');
+    loadData();
+  } else {
+    showToast('❌ ' + (res.error || 'การนำเข้าล้มเหลว'), 'error');
+  }
+}
+
+async function rejectSlipAction() {
+  if (!activeInspectBookingId) return;
+  if (!confirm('ยืนยันว่าสลิปนี้ไม่ถูกต้อง และต้องการแจ้งให้ลูกค้าโอนใหม่หรือไม่?')) return;
+  closeSlipInspectModal();
+  showLoading(true);
+  try {
+    const res = await postAction('cancel', {
+      bookingId: activeInspectBookingId,
+      reason: 'สลิปไม่ถูกต้อง / ยอดเงินไม่ตรง',
+      cancelledBy: staffUsername
+    });
+    showLoading(false);
+    if (res.success) {
+      showToast('⚠️ ปฏิเสธสลิปเรียบร้อยแล้ว โต๊ะเปิดว่างใหม่', 'warn');
+      loadData();
+    } else {
+      showToast('❌ ' + res.error, 'error');
+    }
+  } catch(e) {
+    showLoading(false);
+    showToast('❌ ' + e.message, 'error');
+  }
+}
+
+// Initial Captcha Load
+window.addEventListener('DOMContentLoaded', () => {
+  refreshLoginCaptcha();
+});
+
 </script>
 </body>
 </html>
