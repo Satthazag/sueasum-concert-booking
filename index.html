@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>THE FATHER — ผังโต๊ะ & ระบบจองโต๊ะ VIP วงพ่อจริตแม่ (2,000 บาท ทุกโต๊ะ)</title>
+  <title>ร้านเสือซุ่ม แม่กลอง — ผังโต๊ะ & ระบบจองโต๊ะ VIP วงพ่อจริตแม่ (2,000 บาท ทุกโต๊ะ)</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -476,7 +476,7 @@ function App() {
   const [bankConfig, setBankConfig] = useState({
     bankName: "ธนาคารกสิกรไทย (KBANK)",
     accountNo: "004-1234567890",
-    accountName: "บริษัท เดอะฟาเธอร์ จำกัด",
+    accountName: "ร้านเสือซุ่ม แม่กลอง",
     qrCodeUrl: ""
   });
   const slipInputRef = useRef(null);
@@ -822,34 +822,23 @@ function App() {
           {/* โลโก้แบรนด์และชื่อร้าน */}
           <div className="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-start">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 via-blue-600 to-fuchsia-600 p-[1px] shadow-neon-cyan">
-                <div className="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
-                  <Icons.Wine className="w-5 h-5 text-cyan-300" />
-                </div>
+              <div className="relative flex-shrink-0">
+                <img
+                  src="https://s.imgz.io/2026/09/06/logo2bbfef167092421a.jpg"
+                  alt="ร้านเสือซุ่ม แม่กลอง"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.4)] ring-2 ring-amber-500/20"
+                />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-            {/* ปุ่มเปิดข้อมูลบัญชีธนาคาร & แนบสลิปด่วน */}
-            <button
-              onClick={() => {
-                soundFx.playSelect();
-                setQuickBankModalOpen(true);
-              }}
-              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 hover:from-emerald-500/30 hover:to-cyan-500/30 border border-emerald-400/40 text-emerald-300 text-xs font-bold flex items-center gap-1.5 shadow-[0_0_15px_rgba(16,185,129,0.25)] transition-all transform hover:-translate-y-0.5 active:translate-y-0"
-              title="ตรวจสอบเลขที่บัญชีธนาคาร QR Code หรือแนบสลิปโอนเงิน"
-            >
-              <Icons.CreditCard className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="hidden sm:inline">บัญชีธนาคาร & แนบสลิป</span>
-              <span className="sm:hidden">แนบสลิป</span>
-            </button>
-                  <span className="text-lg font-black tracking-wider bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent font-sans">
-                    เดอะฟาเธอร์ (THE FATHER)
+                  <span className="text-lg font-black tracking-wider bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent font-sans whitespace-nowrap">
+                    เสือซุ่ม แม่กลอง
                   </span>
-                  <span className="text-[10px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-widest bg-fuchsia-950/90 border border-fuchsia-400/50 text-fuchsia-300 shadow-[0_0_10px_rgba(255,0,127,0.3)] font-mono">
+                  <span className="text-[10px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-widest bg-fuchsia-950/90 border border-fuchsia-400/50 text-fuchsia-300 shadow-[0_0_10px_rgba(255,0,127,0.3)] font-mono whitespace-nowrap">
                     ฿2,000 ทุกโต๊ะ
                   </span>
                 </div>
-                <div className="text-[11px] text-slate-400 font-medium tracking-wide flex items-center gap-1.5">
+                <div className="text-[11px] text-slate-400 font-medium tracking-wide flex items-center gap-1.5 whitespace-nowrap">
                   <span>วงพ่อจริตแม่ • แสดงสดและร้านอาหาร</span>
                   <span className="inline-block w-1 h-1 rounded-full bg-cyan-400"></span>
                   <span className="text-cyan-400 font-mono font-bold">ผังจำลองทางการ 100 โต๊ะ</span>
@@ -857,8 +846,22 @@ function App() {
               </div>
             </div>
 
+            {/* ปุ่มเปิดข้อมูลบัญชีธนาคาร & แนบสลิปด่วน */}
+            <button
+              onClick={() => {
+                soundFx.playSelect();
+                setQuickBankModalOpen(true);
+              }}
+              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 hover:from-emerald-500/30 hover:to-cyan-500/30 border border-emerald-400/40 text-emerald-300 text-xs font-bold flex items-center gap-1.5 shadow-[0_0_15px_rgba(16,185,129,0.25)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap flex-shrink-0"
+              title="ตรวจสอบเลขที่บัญชีธนาคาร QR Code หรือแนบสลิปโอนเงิน"
+            >
+              <Icons.CreditCard className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden sm:inline">บัญชีธนาคาร & แนบสลิป</span>
+              <span className="sm:hidden">แนบสลิป</span>
+            </button>
+
             {/* ไฟสถานะระบบออนไลน์ */}
-            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/80 border border-emerald-500/30">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/80 border border-emerald-500/30 whitespace-nowrap">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -974,7 +977,7 @@ function App() {
                 {/* ภาพพื้นหลังผังร้านจริง */}
                 <img
                   src="floor_plan_bg.jpg"
-                  alt="ผังร้าน THE FATHER"
+                  alt="ผังร้านเสือซุ่ม แม่กลอง"
                   className="floor-bg-img"
                   onError={(e) => {
                     if (e.target.src !== BG_BASE64) {
@@ -1203,7 +1206,7 @@ function App() {
             </div>
 
             <div className="mt-4 pt-3 border-t border-slate-800/80 text-[10px] text-slate-400 flex items-center justify-between">
-              <span>สถานที่: เดอะฟาเธอร์ (THE FATHER)</span>
+              <span>สถานที่: ร้านเสือซุ่ม แม่กลอง</span>
               <span>วันงาน: 23 กันยายน 2569</span>
             </div>
           </div>
@@ -1230,7 +1233,7 @@ function App() {
                 <Icons.CreditCard className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-black text-white">บัญชีธนาคาร & แนบสลิปโอนเงิน</h3>
-              <p className="text-xs text-slate-400 mt-0.5">THE FATHER LIVE SHOW & RESTAURANT</p>
+              <p className="text-xs text-slate-400 mt-0.5">ร้านเสือซุ่ม แม่กลอง • LIVE SHOW & RESTAURANT</p>
             </div>
 
             {/* กล่องข้อมูลบัญชีธนาคาร */}
@@ -1428,7 +1431,7 @@ function App() {
 
                   <div className="text-xs text-slate-300 flex justify-between pt-1 border-t border-slate-800">
                     <span>ชื่อบัญชี:</span>
-                    <span className="font-bold text-white">บริษัท เดอะฟาเธอร์ จำกัด</span>
+                    <span className="font-bold text-white">ร้านเสือซุ่ม แม่กลอง</span>
                   </div>
                   <div className="text-xs text-slate-300 flex justify-between pt-1">
                     <span>ยอดที่ต้องโอน:</span>
