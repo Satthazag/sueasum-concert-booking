@@ -382,15 +382,75 @@ const Icons = {
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
     </svg>
+  ),
+  Copy: ({ className = "w-4 h-4" }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+    </svg>
+  ),
+  Upload: ({ className = "w-4 h-4" }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+    </svg>
+  ),
+  FileImage: ({ className = "w-4 h-4" }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+    </svg>
+  ),
+  Check: ({ className = "w-4 h-4" }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  ),
+  QrCode: ({ className = "w-4 h-4" }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/>
+      <path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/>
+    </svg>
+  ),
+  CreditCard: ({ className = "w-4 h-4" }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/>
+    </svg>
+  ),
+  ShieldCheck: ({ className = "w-4 h-4" }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>
+    </svg>
+  ),
+  Eye: ({ className = "w-4 h-4" }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+    </svg>
   )
 };
 
-// Initial Bookings State (เริ่มต้นว่างทุกโต๊ะ ไม่มีข้อมูลตัวอย่างจำลอง)
+// 47 โต๊ะที่ถูกจองตามผังคอนเสิร์ต (สถานะ: รอชำระเงิน / Pending ฿2,000)
+const RED_X_TABLES = [
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+  40, 42, 48, 49, 50, 51, 52, 56, 57, 58, 59,
+  63, 64, 71, 72, 73, 76, 77, 82, 83, 84, 85, 87, 88, 89, 90,
+  98, 99, 100
+];
+
 const INITIAL_DEMO_BOOKINGS = {};
+RED_X_TABLES.forEach(tNo => {
+  INITIAL_DEMO_BOOKINGS[String(tNo)] = {
+    bookingId: `BK-SEEDED-${String(tNo).padStart(3, '0')}`,
+    tableId: String(tNo),
+    tableNo: tNo,
+    customerName: 'ลูกค้าจองผ่านระบบ',
+    customerPhone: '08X-XXX-XXXX',
+    status: 'pending',
+    amount: UNIFIED_TABLE_PRICE,
+    time: new Date().toISOString()
+  };
+});
 
 // Main Application
 function App() {
-  const [bookings, setBookings] = useState({});
+  const [bookings, setBookings] = useState(INITIAL_DEMO_BOOKINGS);
   const [selectedTable, setSelectedTable] = useState(null);
   const [filterTab, setFilterTab] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -406,12 +466,42 @@ function App() {
   const [lineName, setLineName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingSuccessData, setBookingSuccessData] = useState(null);
+  const [slipFile, setSlipFile] = useState(null);
+  const [slipPreview, setSlipPreview] = useState(null);
+  const [isUploadingSlip, setIsUploadingSlip] = useState(false);
+  const [slipUploadSuccess, setSlipUploadSuccess] = useState(false);
+  const [copiedBank, setCopiedBank] = useState(false);
+  const [quickBankModalOpen, setQuickBankModalOpen] = useState(false);
+  const [quickSearchInput, setQuickSearchInput] = useState('');
+  const [bankConfig, setBankConfig] = useState({
+    bankName: "ธนาคารกสิกรไทย (KBANK)",
+    accountNo: "004-1234567890",
+    accountName: "บริษัท เดอะฟาเธอร์ จำกัด",
+    qrCodeUrl: ""
+  });
+  const slipInputRef = useRef(null);
 
   useEffect(() => {
     soundFx.enabled = soundEnabled;
   }, [soundEnabled]);
 
   // Load Bookings from Google Apps Script Backend
+  const fetchBankConfig = async () => {
+    try {
+      const res = await fetch(`${SCRIPT_URL}?action=getBankConfig`);
+      const d = await res.json();
+      if (d.success && d.config) {
+        setBankConfig(prev => ({
+          ...prev,
+          bankName: d.config.bankName || prev.bankName,
+          accountNo: d.config.accountNo || prev.accountNo,
+          accountName: d.config.accountName || prev.accountName,
+          qrCodeUrl: d.config.qrCodeUrl || prev.qrCodeUrl
+        }));
+      }
+    } catch(e) {}
+  };
+
   const fetchLiveBookings = async () => {
     try {
       const res = await fetch(`${SCRIPT_URL}?action=getBookings`);
@@ -430,6 +520,7 @@ function App() {
 
   useEffect(() => {
     fetchLiveBookings();
+    fetchBankConfig();
     // โหลดข้อมูลโต๊ะอัปเดตแบบเรียลไทม์ทุก 10 วินาที
     const timer = setInterval(fetchLiveBookings, 10000);
 
@@ -489,6 +580,126 @@ function App() {
     setHoveredTable(null);
   };
 
+  // Copy Bank Account
+  const handleCopyBank = () => {
+    navigator.clipboard.writeText(bankConfig.accountNo || "004-1234567890").then(() => {
+      setCopiedBank(true);
+      soundFx.playClick();
+      triggerToast("คัดลอกเลขบัญชี 004-1234567890 สำเร็จ", "success");
+      setTimeout(() => setCopiedBank(false), 3000);
+    }).catch(() => {
+      triggerToast("เลขบัญชีธนาคาร: 004-1234567890", "info");
+    });
+  };
+
+  // Handle Slip Selection with Magic Byte & Image Verification
+  const handleSlipChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      triggerToast("กรุณาเลือกไฟล์รูปภาพสลิปโอนเงิน (JPG, PNG)", "error");
+      return;
+    }
+    if (file.size < 10 * 1024) {
+      triggerToast("⚠️ ไฟล์รูปภาพมีขนาดเล็กผิดปกติ (ต่ำกว่า 10KB) กรุณาตรวจสอบสลิป", "error");
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      triggerToast("⚠️ ไฟล์ภาพมีขนาดใหญ่เกิน 8MB กรุณาเลือกไฟล์ขนาดเล็กลง", "error");
+      return;
+    }
+
+    // Step 1: Magic Byte Validation (ตรวจโครงสร้างไฟล์จริง ป้องกันการปลอมแปลงไฟล์)
+    const byteReader = new FileReader();
+    byteReader.onload = (bEv) => {
+      const bytes = new Uint8Array(bEv.target.result);
+      let isValidMagic = false;
+
+      // JPEG (FF D8 FF)
+      if (bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF) {
+        isValidMagic = true;
+      }
+      // PNG (89 50 4E 47)
+      else if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47) {
+        isValidMagic = true;
+      }
+      // WebP (52 49 46 46)
+      else if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46) {
+        isValidMagic = true;
+      }
+
+      if (!isValidMagic) {
+        triggerToast("⚠️ ไฟล์ไม่ใช่รูปภาพที่ถูกต้อง (ตรวจพบความผิดปกติของโครงสร้างไฟล์)", "error");
+        if (slipInputRef.current) slipInputRef.current.value = "";
+        return;
+      }
+
+      // Step 2: Read as Data URL & Verify Image Dimensions
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target.result;
+        const img = new Image();
+        img.onload = () => {
+          if (img.width < 250 || img.height < 250) {
+            triggerToast("⚠️ ความละเอียดของสลิปต่ำเกินไป กรุณาใช้รูปถ่ายสลิปที่คมชัด", "warn");
+          }
+          setSlipFile(file);
+          setSlipPreview(dataUrl);
+          soundFx.playSelect();
+          triggerToast("📄 โหลดสลิปสำเร็จ พร้อมส่งตรวจสอบ", "success");
+        };
+        img.onerror = () => {
+          triggerToast("❌ ไม่สามารถแสดงผลรูปภาพได้ กรุณาลองใหม่อีกครั้ง", "error");
+        };
+        img.src = dataUrl;
+      };
+      reader.readAsDataURL(file);
+    };
+    byteReader.readAsArrayBuffer(file.slice(0, 8));
+  };
+
+  // Handle Slip Upload Submission to Backend GAS
+  const handleUploadSlipSubmit = async () => {
+    if (!slipFile || !bookingSuccessData) return;
+    setIsUploadingSlip(true);
+    soundFx.playClick();
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64Data = e.target.result;
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'uploadSlip',
+            bookingId: bookingSuccessData.bookingId,
+            slipBase64: base64Data,
+            mimeType: slipFile.type || 'image/jpeg'
+          })
+        });
+        const data = await res.json();
+        setIsUploadingSlip(false);
+        if (data.success) {
+          soundFx.playSuccess();
+          setSlipUploadSuccess(true);
+          triggerToast("✅ ส่งสลิปสำเร็จ! ระบบได้ส่งแจ้งเตือนไปที่ LINE สตาฟแล้ว", "success");
+          fetchLiveBookings();
+        } else {
+          triggerToast(data.error || "เกิดข้อผิดพลาดในการส่งสลิป", "error");
+        }
+      };
+      reader.onerror = () => {
+        setIsUploadingSlip(false);
+        triggerToast("ไม่สามารถประมวลผลรูปภาพได้ กรุณาลองใหม่", "error");
+      };
+      reader.readAsDataURL(slipFile);
+    } catch (err) {
+      setIsUploadingSlip(false);
+      console.error("Upload slip error:", err);
+      triggerToast("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์", "error");
+    }
+  };
+
   // Confirm Reservation & Lock Table on Google Sheets
   const handleConfirmReservation = async (e) => {
     e.preventDefault();
@@ -532,7 +743,14 @@ function App() {
 
       // จองสำเร็จ — บันทึกสถานะล็อคโต๊ะทันที
       const officialBooking = {
-        bookingId: data.bookingId,
+        bookingId: data.bookingId || `VIP-${String(selectedTable).padStart(3, '0')}`,
+        ticketNo: `VIP-${String(selectedTable).padStart(3, '0')}`,
+        cards: [
+          `VIP-${String(selectedTable).padStart(3, '0')}/1`,
+          `VIP-${String(selectedTable).padStart(3, '0')}/2`,
+          `VIP-${String(selectedTable).padStart(3, '0')}/3`,
+          `VIP-${String(selectedTable).padStart(3, '0')}/4`
+        ],
         tableId: selectedTable,
         customerName: customerName.trim(),
         phone: customerPhone.trim(),
@@ -611,6 +829,19 @@ function App() {
               </div>
               <div>
                 <div className="flex items-center gap-2">
+            {/* ปุ่มเปิดข้อมูลบัญชีธนาคาร & แนบสลิปด่วน */}
+            <button
+              onClick={() => {
+                soundFx.playSelect();
+                setQuickBankModalOpen(true);
+              }}
+              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 hover:from-emerald-500/30 hover:to-cyan-500/30 border border-emerald-400/40 text-emerald-300 text-xs font-bold flex items-center gap-1.5 shadow-[0_0_15px_rgba(16,185,129,0.25)] transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+              title="ตรวจสอบเลขที่บัญชีธนาคาร QR Code หรือแนบสลิปโอนเงิน"
+            >
+              <Icons.CreditCard className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden sm:inline">บัญชีธนาคาร & แนบสลิป</span>
+              <span className="sm:hidden">แนบสลิป</span>
+            </button>
                   <span className="text-lg font-black tracking-wider bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent font-sans">
                     เดอะฟาเธอร์ (THE FATHER)
                   </span>
@@ -979,7 +1210,131 @@ function App() {
 
         </div>
 
-      </main>
+      
+      {/* ── ป๊อบอัพตรวจสอบเลขบัญชีธนาคาร QR CODE และแนบสลิปด่วน ── */}
+      {quickBankModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
+          <div
+            className="w-full max-w-md glass-panel-glow rounded-3xl p-6 border-emerald-500/40 shadow-2xl relative max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setQuickBankModalOpen(false)}
+              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800/80 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-all"
+            >
+              <Icons.X className="w-4 h-4" />
+            </button>
+
+            <div className="text-center mb-4">
+              <div className="w-12 h-12 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 mb-2 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                <Icons.CreditCard className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-black text-white">บัญชีธนาคาร & แนบสลิปโอนเงิน</h3>
+              <p className="text-xs text-slate-400 mt-0.5">THE FATHER LIVE SHOW & RESTAURANT</p>
+            </div>
+
+            {/* กล่องข้อมูลบัญชีธนาคาร */}
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-950/50 via-slate-900 to-cyan-950/40 border border-emerald-500/40 mb-4 shadow-lg text-left">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">ธนาคารที่รับชำระ</span>
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  {bankConfig.bankName}
+                </span>
+              </div>
+
+              <div className="bg-slate-950/90 rounded-xl p-3 border border-emerald-500/20 mb-3">
+                <div className="text-[10px] text-slate-400 mb-0.5">เลขที่บัญชี (แตะเพื่อคัดลอก):</div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xl font-mono font-black text-emerald-300 tracking-wider">
+                    {bankConfig.accountNo}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleCopyBank}
+                    className="px-3 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 transition-all"
+                  >
+                    {copiedBank ? <Icons.Check className="w-3.5 h-3.5 text-emerald-400" /> : <Icons.Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedBank ? "คัดลอกแล้ว" : "คัดลอก"}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-1.5 text-xs text-slate-300">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">ชื่อบัญชี:</span>
+                  <b className="text-white">{bankConfig.accountName}</b>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">ยอดชำระต่อโต๊ะ:</span>
+                  <b className="text-emerald-400 font-mono font-black">฿2,000.00 บาท (สำหรับ 4 ท่าน)</b>
+                </div>
+              </div>
+
+              {/* QR Code PromptPay */}
+              <div className="mt-3 pt-3 border-t border-slate-800 text-center">
+                <div className="text-[11px] font-bold text-slate-300 mb-2 flex items-center justify-center gap-1.5">
+                  <Icons.QrCode className="w-4 h-4 text-cyan-400" />
+                  <span>สแกน QR Code พร้อมเพย์ ชำระเงิน</span>
+                </div>
+                <div className="inline-block p-2 rounded-xl bg-white shadow-lg mx-auto">
+                  <img
+                    src={bankConfig.qrCodeUrl || `https://promptpay.io/${(bankConfig.accountNo || '0041234567890').replace(/[^0-9]/g, '')}/2000.png`}
+                    alt="PromptPay QR Code"
+                    className="w-40 h-40 object-contain mx-auto"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+                <div className="text-[10px] text-slate-400 mt-1.5">สแกนจ่ายได้ทุกแอปพลิเคชันธนาคาร</div>
+              </div>
+            </div>
+
+            {/* ค้นหาโต๊ะที่จองไว้เพื่อแนบสลิป */}
+            <div className="p-4 rounded-2xl bg-slate-950/80 border border-cyan-500/30 text-left">
+              <label className="block text-xs font-bold text-white mb-1.5 flex items-center gap-1.5">
+                <Icons.Upload className="w-4 h-4 text-cyan-400" />
+                <span>ต้องการแนบสลิปสำหรับโต๊ะที่จองไว้:</span>
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="ระบุหมายเลขโต๊ะ เช่น 42 หรือรหัสจอง..."
+                  value={quickSearchInput}
+                  onChange={(e) => setQuickSearchInput(e.target.value)}
+                  className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const tNum = parseInt(quickSearchInput.replace(/[^0-9]/g, ''));
+                    if (tNum && tNum >= 1 && tNum <= 100) {
+                      setQuickBankModalOpen(false);
+                      handleTableClick(tNum);
+                    } else {
+                      triggerToast("กรุณาระบุหมายเลขโต๊ะที่ถูกต้อง (1-100)", "warn");
+                    }
+                  }}
+                  className="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-black"
+                >
+                  ค้นหา & แนบสลิป
+                </button>
+              </div>
+              <div className="text-[10px] text-slate-400 mt-1.5">
+                💡 หรือคลิกเลือกโต๊ะบนแผนผังผังโต๊ะได้โดยตรง
+              </div>
+            </div>
+
+            <button
+              onClick={() => setQuickBankModalOpen(false)}
+              className="w-full mt-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs"
+            >
+              ปิดหน้าต่าง
+            </button>
+          </div>
+        </div>
+      )}
+</main>
 
       {/* ── หน้าต่างป๊อบอัพสำหรับจองโต๊ะ (MODAL) ── */}
       {modalOpen && selectedTable && (
@@ -1001,47 +1356,186 @@ function App() {
             </button>
 
             {bookingSuccessData ? (
-              /* หน้าจอแจ้งเตือนการจองสำเร็จ */
-              <div className="text-center py-4">
-                <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 mb-4 shadow-[0_0_25px_rgba(16,185,129,0.35)]">
-                  <Icons.CheckCircle2 className="w-8 h-8" />
+              /* หน้าจอแจ้งเตือนการจองสำเร็จ พร้อมช่องทางชำระเงินและแนบสลิป */
+              <div className="text-center py-2 max-h-[82vh] overflow-y-auto pr-1">
+                <div className="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 mb-3 shadow-[0_0_25px_rgba(16,185,129,0.35)]">
+                  <Icons.CheckCircle2 className="w-7 h-7" />
                 </div>
                 
-                <h3 className="text-2xl font-black text-white">การจองโต๊ะสำเร็จ!</h3>
-                <p className="text-xs text-slate-400 mt-1">รหัสการจองของคุณได้รับการบันทึกลงในระบบเรียบร้อยแล้ว</p>
+                <h3 className="text-xl font-black text-white">
+                  {slipUploadSuccess ? 'แนบสลิปเรียบร้อยแล้ว!' : 'จองโต๊ะสำเร็จ! รอการแนบสลิป'}
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  {slipUploadSuccess 
+                    ? 'ระบบได้ส่งสลิปแจ้งเตือนไปยัง LINE สตาฟแล้ว เพื่อทำการตรวจสอบและยืนยันโต๊ะ' 
+                    : 'โต๊ะถูกล็อคให้ท่าน 15 นาที กรุณาโอนเงินและแนบสลิปเพื่อยืนยันสิทธิ์'}
+                </p>
                 
-                <div className="my-6 p-4 rounded-2xl bg-slate-950 border border-cyan-500/30 text-left">
-                  <div className="flex justify-between text-xs py-1 border-b border-slate-800">
-                    <span className="text-slate-400">รหัสการจอง (Booking ID):</span>
+                {/* ข้อมูลการจองสรุปย่อ */}
+                <div className="my-3 p-3.5 rounded-2xl bg-slate-950/80 border border-cyan-500/30 text-left text-xs space-y-1.5">
+                  <div className="flex justify-between py-0.5 border-b border-slate-800/80">
+                    <span className="text-slate-400">รหัสการจอง:</span>
                     <b className="text-cyan-300 font-mono">{bookingSuccessData.bookingId}</b>
                   </div>
-                  <div className="flex justify-between text-xs py-1 border-b border-slate-800">
-                    <span className="text-slate-400">หมายเลขโต๊ะ:</span>
-                    <b className="text-white">โต๊ะ #{bookingSuccessData.tableId}</b>
+                  <div className="flex justify-between py-0.5 border-b border-slate-800/80">
+                    <span className="text-slate-400">โต๊ะที่จอง:</span>
+                    <b className="text-white font-bold">โต๊ะ #{bookingSuccessData.tableId} (VIP 4 ท่าน)</b>
                   </div>
-                  <div className="flex justify-between text-xs py-1 border-b border-slate-800">
-                    <span className="text-slate-400">ชื่อผู้จอง:</span>
+                  <div className="flex justify-between py-0.5 border-b border-slate-800/80">
+                    <span className="text-slate-400">ผู้จอง:</span>
                     <b className="text-white">{bookingSuccessData.customerName}</b>
                   </div>
-                  <div className="flex justify-between text-xs py-1 border-b border-slate-800">
-                    <span className="text-slate-400">ยอดชำระ:</span>
-                    <b className="text-emerald-400 text-sm font-mono">฿{bookingSuccessData.amount.toLocaleString()} บาท</b>
+                  <div className="flex justify-between py-0.5 border-b border-slate-800/80">
+                    <span className="text-slate-400">ยอดชำระสุทธิ:</span>
+                    <b className="text-emerald-400 text-sm font-mono font-black">฿{Number(bookingSuccessData.amount || UNIFIED_TABLE_PRICE).toLocaleString()} บาท</b>
                   </div>
-                  <div className="flex justify-between text-xs py-1">
-                    <span className="text-slate-400">ระยะเวลาล็อคโต๊ะ:</span>
-                    <b className="text-amber-400">15 นาที (กำลังนับถอยหลัง)</b>
+                  <div className="flex justify-between py-0.5">
+                    <span className="text-slate-400">สถานะ:</span>
+                    <span className={slipUploadSuccess ? "text-emerald-400 font-bold" : "text-amber-400 font-bold"}>
+                      {slipUploadSuccess ? "✅ ส่งสลิปแล้ว (รอสตาฟตรวจ)" : "⏳ รอชำระเงิน (ล็อค 15 นาที)"}
+                    </span>
                   </div>
                 </div>
+
+                {/* กล่องรายละเอียดการโอนเงิน (ธนาคารกสิกรไทย) */}
+                <div className="mb-4 p-4 rounded-2xl bg-gradient-to-br from-emerald-950/40 via-slate-900 to-cyan-950/40 border border-emerald-500/40 text-left shadow-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span className="text-xs font-black text-white uppercase tracking-wider">บัญชีโอนเงินชำระค่าโต๊ะ</span>
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                      KBANK กสิกรไทย
+                    </span>
+                  </div>
+
+                  <div className="bg-slate-950/90 rounded-xl p-3 border border-emerald-500/20 mb-2">
+                    <div className="text-[11px] text-slate-400 mb-0.5">เลขที่บัญชี (คลิกเพื่อคัดลอก):</div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg lg:text-xl font-mono font-black text-emerald-300 tracking-wider">
+                        004-1234567890
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleCopyBank}
+                        className="px-3 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5 transition-all"
+                      >
+                        {copiedBank ? <Icons.Check className="w-3.5 h-3.5 text-emerald-400" /> : <Icons.Copy className="w-3.5 h-3.5" />}
+                        <span>{copiedBank ? "คัดลอกแล้ว" : "คัดลอก"}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="text-xs text-slate-300 flex justify-between pt-1 border-t border-slate-800">
+                    <span>ชื่อบัญชี:</span>
+                    <span className="font-bold text-white">บริษัท เดอะฟาเธอร์ จำกัด</span>
+                  </div>
+                  <div className="text-xs text-slate-300 flex justify-between pt-1">
+                    <span>ยอดที่ต้องโอน:</span>
+                    <span className="font-black text-emerald-300 font-mono">฿2,000.00 บาท</span>
+                  </div>
+                </div>
+
+                {/* กล่องแนบสลิปโอนเงิน */}
+                {slipUploadSuccess ? (
+                  <div className="mb-4 p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/40 text-center">
+                    <div className="text-emerald-300 font-bold text-sm mb-1 flex items-center justify-center gap-1.5">
+                      <Icons.CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                      <span>หลักฐานการชำระเงินถูกบันทึกแล้ว</span>
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      ระบบได้ส่งข้อความแจ้งเตือนพร้อมสลิปไปยัง LINE สตาฟแล้ว สตาฟกำลังดำเนินการตรวจและอนุมัติให้ท่าน
+                    </p>
+                  </div>
+                ) : (
+                  <div className="mb-4 p-4 rounded-2xl bg-slate-950/90 border border-cyan-500/30 text-left">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <Icons.Upload className="w-4 h-4 text-cyan-400" />
+                        แนบสลิปโอนเงินยืนยันการจอง *
+                      </span>
+                      <span className="text-[10px] text-cyan-300">แจ้งเตือน LINE สตาฟทันที</span>
+                    </div>
+
+                    <input
+                      type="file"
+                      ref={slipInputRef}
+                      accept="image/*"
+                      onChange={handleSlipChange}
+                      className="hidden"
+                    />
+
+                    {slipPreview ? (
+                      <div className="relative rounded-xl overflow-hidden border border-cyan-500/40 bg-slate-900/80 p-2 mb-3">
+                        <img
+                          src={slipPreview}
+                          alt="Slip Preview"
+                          className="w-full h-40 object-contain rounded-lg bg-black/50"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSlipFile(null);
+                            setSlipPreview(null);
+                            if (slipInputRef.current) slipInputRef.current.value = '';
+                          }}
+                          className="absolute top-3 right-3 px-2 py-1 rounded bg-red-600/80 text-white text-[11px] font-bold shadow hover:bg-red-600"
+                        >
+                          เปลี่ยนรูป
+                        </button>
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() => slipInputRef.current && slipInputRef.current.click()}
+                        className="cursor-pointer border-2 border-dashed border-cyan-500/40 hover:border-cyan-400 rounded-xl p-4 text-center bg-cyan-950/10 hover:bg-cyan-950/20 transition-all mb-3 group"
+                      >
+                        <Icons.FileImage className="w-8 h-8 mx-auto text-cyan-400 group-hover:scale-110 transition-transform mb-1.5" />
+                        <div className="text-xs font-bold text-white">
+                          แตะที่นี่เพื่อเลือกรูปภาพสลิปโอนเงิน
+                        </div>
+                        <div className="text-[10px] text-slate-400 mt-0.5">
+                          รองรับรูปถ่ายจากกล้อง หรือไฟล์รูปจากอัลบั้ม (JPG, PNG)
+                        </div>
+                      </div>
+                    )}
+
+                    {/* ปุ่มยืนยันการแนบสลิป */}
+                    <button
+                      type="button"
+                      onClick={handleUploadSlipSubmit}
+                      disabled={!slipFile || isUploadingSlip}
+                      className={`w-full py-3 px-4 rounded-xl font-black text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-all ${
+                        slipFile && !isUploadingSlip
+                          ? "bg-gradient-to-r from-cyan-400 via-blue-500 to-emerald-400 text-slate-950 shadow-neon-cyan hover:shadow-neon-magenta hover:-translate-y-0.5 active:translate-y-0"
+                          : "bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700"
+                      }`}
+                    >
+                      {isUploadingSlip ? (
+                        <>
+                          <span className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
+                          <span>กำลังอัปโหลดและส่งแจ้งเตือน LINE สตาฟ...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Icons.Upload className="w-4 h-4" />
+                          <span>ยืนยันการแนบสลิปโอนเงิน</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
 
                 <button
                   onClick={() => {
                     soundFx.playClick();
                     setModalOpen(false);
                     setBookingSuccessData(null);
+                    setSlipFile(null);
+                    setSlipPreview(null);
                   }}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-500 text-slate-950 font-black text-sm tracking-wider uppercase shadow-[0_0_20px_rgba(16,185,129,0.4)]"
+                  className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs tracking-wider uppercase transition-all"
                 >
-                  เสร็จสิ้น / ปิดหน้าต่าง
+                  {slipUploadSuccess ? "เสร็จสิ้น / ปิดหน้าต่าง" : "ไว้แนบสลิปภายหลัง (โต๊ะล็อค 15 นาที)"}
                 </button>
               </div>
             ) : (
