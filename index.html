@@ -164,6 +164,12 @@
       animation: pulseMarker 1.8s infinite;
     }
 
+    .table-marker.pending-external {
+      background: rgba(55, 18, 28, 0.9);
+      border: 1.5px solid #f472b6;
+      color: #fbcfe8;
+      box-shadow: 0 0 12px rgba(244, 114, 182, 0.55);
+    }
     .table-marker.pending {
       background: rgba(45, 25, 0, 0.88);
       border: 1.5px solid #f59e0b;
@@ -426,7 +432,7 @@ const Icons = {
   )
 };
 
-// 47 โต๊ะที่ถูกจองตามผังคอนเสิร์ต (สถานะ: รอชำระเงิน / Pending ฿2,000)
+// 47 โต๊ะที่ถูกจองจากเพจร้าน (สถานะ: จองแล้ว รอชำระเงินจากระบบอื่น - ไม่ปลดล็อคอัตโนมัติ)
 const RED_X_TABLES = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
   40, 42, 48, 49, 50, 51, 52, 56, 57, 58, 59,
@@ -437,12 +443,14 @@ const RED_X_TABLES = [
 const INITIAL_DEMO_BOOKINGS = {};
 RED_X_TABLES.forEach(tNo => {
   INITIAL_DEMO_BOOKINGS[String(tNo)] = {
-    bookingId: `BK-SEEDED-${String(tNo).padStart(3, '0')}`,
+    bookingId: `PAGE-${String(tNo).padStart(3, '0')}`,
     tableId: String(tNo),
     tableNo: tNo,
-    customerName: 'ลูกค้าจองผ่านระบบ',
-    customerPhone: '08X-XXX-XXXX',
-    status: 'pending',
+    customerName: 'จองจากเพจร้าน',
+    customerPhone: 'เพจร้าน',
+    status: 'pending_external',
+    isExternal: true,
+    channel: 'เพจร้าน',
     amount: UNIFIED_TABLE_PRICE,
     time: new Date().toISOString()
   };
@@ -553,12 +561,13 @@ function App() {
   const handleTableClick = (num) => {
     const b = bookings[num];
     const isBooked = b && (b.status === 'paid' || b.status === 'booked' || b.status === 'verified');
-    const isPending = b && (b.status === 'pending' || b.status === 'slip_uploaded');
+    const isPage = b && (b.status === 'pending_external' || b.isExternal || b.customerName?.includes('เพจร้าน') || b.channel === 'เพจร้าน');
+    const isPending = b && (b.status === 'pending' || b.status === 'slip_uploaded') && !isPage;
     
-    if (isBooked || isPending) {
+    if (isBooked || isPage || isPending) {
       soundFx.playClick();
-      const statusText = isBooked ? 'ถูกจองและชำระเงินแล้ว' : 'กำลังรอดำเนินการชำระเงิน';
-      triggerToast(`โต๊ะ #${num} ${statusText} (${b.customerName || 'ไม่ว่าง'})`, 'warn');
+      const statusText = isBooked ? 'ถูกจองและชำระเงินแล้ว' : (isPage ? 'จองแล้ว (รอชำระเงินจากระบบอื่น / เพจร้าน)' : 'กำลังรอดำเนินการชำระเงินในระบบ');
+      triggerToast(`โต๊ะ #${num} ${statusText} (${isPage ? 'จองจากเพจร้าน' : (b.customerName || 'ไม่ว่าง')})`, 'warn');
       return;
     }
 
@@ -785,14 +794,20 @@ function App() {
   const stats = useMemo(() => {
     let booked = 0;
     let pending = 0;
+    let pagePending = 0;
     Object.values(bookings).forEach(b => {
-      if (b.status === 'paid' || b.status === 'booked' || b.status === 'verified') booked++;
-      else if (b.status === 'pending' || b.status === 'slip_uploaded') pending++;
+      const isPaid = (b.status === 'paid' || b.status === 'booked' || b.status === 'verified');
+      const isPage = (b.status === 'pending_external' || b.isExternal || b.customerName?.includes('เพจร้าน') || b.channel === 'เพจร้าน');
+      const isPend = (b.status === 'pending' || b.status === 'slip_uploaded') && !isPage;
+      if (isPaid) booked++;
+      else if (isPage) pagePending++;
+      else if (isPend) pending++;
     });
     return {
       booked,
       pending,
-      available: 100 - (booked + pending),
+      pagePending,
+      available: Math.max(0, 100 - (booked + pending + pagePending)),
       total: 100
     };
   }, [bookings]);
@@ -800,7 +815,7 @@ function App() {
   // Filter Matcher
   const isTableVisible = (num) => {
     const b = bookings[num];
-    const isAvail = !b || (!['paid', 'booked', 'verified', 'pending', 'slip_uploaded'].includes(b.status));
+    const isAvail = !b || (!['paid', 'booked', 'verified', 'pending', 'pending_external', 'slip_uploaded'].includes(b.status));
 
     if (filterTab === 'AVAILABLE' && !isAvail) return false;
     if (filterTab === 'STAGE' && !(num >= 32 && num <= 62)) return false;
@@ -950,20 +965,25 @@ function App() {
             </div>
             
             {/* ตัวเลขนับสถานะโต๊ะสด */}
-            <div className="flex items-center gap-4 text-xs">
+            <div className="flex flex-wrap items-center gap-3 lg:gap-4 text-xs">
               <div className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00f0ff]"></span>
                 <span className="text-slate-400">โต๊ะว่าง:</span>
                 <b className="text-cyan-300 font-bold font-mono">{stats.available}</b>
               </div>
               <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-pink-400 shadow-[0_0_8px_#f472b6]"></span>
+                <span className="text-slate-400">จองจากเพจร้าน:</span>
+                <b className="text-pink-300 font-bold font-mono">{stats.pagePending || 0}</b>
+              </div>
+              <div className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#f59e0b]"></span>
-                <span className="text-slate-400">รอชำระเงิน:</span>
+                <span className="text-slate-400">รอชำระในระบบ:</span>
                 <b className="text-amber-300 font-bold font-mono">{stats.pending}</b>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
-                <span className="text-slate-400">จองแล้ว:</span>
+                <span className="text-slate-400">ชำระแล้ว:</span>
                 <b className="text-slate-300 font-bold font-mono">{stats.booked}</b>
               </div>
             </div>
@@ -992,13 +1012,15 @@ function App() {
                   const pos = TABLE_COORDS[num];
                   const b = bookings[num];
                   const isBooked = b && (b.status === 'paid' || b.status === 'booked' || b.status === 'verified');
-                  const isPending = b && (b.status === 'pending' || b.status === 'slip_uploaded');
+                  const isPage = b && (b.status === 'pending_external' || b.isExternal || b.customerName?.includes('เพจร้าน') || b.channel === 'เพจร้าน');
+                  const isPending = b && (b.status === 'pending' || b.status === 'slip_uploaded') && !isPage;
                   const isSelected = selectedTable === num;
                   const isVisible = isTableVisible(num);
 
                   let statusClass = 'avail';
                   if (isSelected) statusClass = 'selected';
                   else if (isBooked) statusClass = 'paid';
+                  else if (isPage) statusClass = 'pending-external';
                   else if (isPending) statusClass = 'pending';
 
                   return (
@@ -1050,8 +1072,10 @@ function App() {
               <div className="text-[10.5px] font-bold mt-1.5">
                 {bookings[hoveredTable]?.status === 'paid' ? (
                   <span className="text-slate-400">🔒 จองแล้ว (ไม่ว่าง)</span>
+                ) : (bookings[hoveredTable]?.status === 'pending_external' || bookings[hoveredTable]?.isExternal || bookings[hoveredTable]?.customerName?.includes('เพจร้าน') || bookings[hoveredTable]?.channel === 'เพจร้าน') ? (
+                  <span className="text-pink-400">📱 จองจากเพจร้าน (รอชำระเงินจากระบบอื่น)</span>
                 ) : bookings[hoveredTable]?.status === 'pending' ? (
-                  <span className="text-amber-400">⏳ รอชำระเงิน (กำลังล็อคโต๊ะ)</span>
+                  <span className="text-amber-400">⏳ รอชำระเงินในระบบ (ล็อค 15 นาที)</span>
                 ) : (
                   <span className="text-emerald-400">🟢 ว่าง พร้อมให้จอง</span>
                 )}
@@ -1198,10 +1222,14 @@ function App() {
                 <span className="text-slate-300 font-medium">รอชำระ (ล็อค 15 น.)</span>
               </div>
               <div className="flex items-center gap-2.5 p-2 rounded-lg bg-slate-900/40">
+                <span className="w-4 h-4 rounded-full bg-pink-950/80 border border-pink-400 shadow-[0_0_8px_#f472b6] flex items-center justify-center text-[9px] font-bold text-pink-300">1</span>
+                <span className="text-pink-300 font-medium">จองจากเพจร้าน (รอชำระระบบอื่น)</span>
+              </div>
+              <div className="flex items-center gap-2.5 p-2 rounded-lg bg-slate-900/40">
                 <span className="w-4 h-4 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-[9px] text-slate-400">
                   <Icons.Lock className="w-2.5 h-2.5" />
                 </span>
-                <span className="text-slate-400 font-medium">จองแล้ว (ไม่ว่าง)</span>
+                <span className="text-slate-400 font-medium">จองแล้ว / ชำระแล้ว (ไม่ว่าง)</span>
               </div>
             </div>
 
